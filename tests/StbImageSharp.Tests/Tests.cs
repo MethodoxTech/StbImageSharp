@@ -18,7 +18,7 @@ namespace StbImageSharp.Tests
 			Assert.Throws<InvalidOperationException>(() =>
 			{
 				ImageResult result = null;
-				using (var stream = _assembly.OpenResourceStream(filename))
+				using (Stream stream = _assembly.OpenResourceStream(filename))
 				{
 					result = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
 				}
@@ -32,7 +32,7 @@ namespace StbImageSharp.Tests
 		public void Load(string filename, int width, int height, ColorComponents colorComponents)
 		{
 			ImageResult result = null;
-			using (var stream = _assembly.OpenResourceStream(filename))
+			using (Stream stream = _assembly.OpenResourceStream(filename))
 			{
 				result = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
 			}
@@ -51,7 +51,7 @@ namespace StbImageSharp.Tests
 		public void LoadHdr(string filename, int width, int height, ColorComponents colorComponents)
 		{
 			ImageResultFloat result = null;
-			using(var stream = _assembly.OpenResourceStream(filename))
+			using(Stream stream = _assembly.OpenResourceStream(filename))
 			{
 				result = ImageResultFloat.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
 			}
@@ -72,16 +72,16 @@ namespace StbImageSharp.Tests
 		{
 			ImageInfo? result;
 
-			var data = new byte[headerSize];
-			using (var stream = _assembly.OpenResourceStream(filename))
-			{
-				stream.Read(data, 0, data.Length);
-			}
+            byte[] data = new byte[headerSize];
+            using (Stream stream = _assembly.OpenResourceStream(filename))
+            {
+                stream.Read(data, 0, data.Length);
+            }
 
-			using (var stream = new MemoryStream(data))
-			{
-				result = ImageInfo.FromStream(stream);
-			}
+            using (MemoryStream stream = new(data))
+            {
+                result = ImageInfo.FromStream(stream);
+            }
 
 			Assert.NotNull(result);
 
@@ -96,10 +96,10 @@ namespace StbImageSharp.Tests
 		[InlineData("somersault.gif", 384, 480, ColorComponents.RedGreenBlueAlpha, 43)]
 		public void AnimatedGifFrames(string fileName, int width, int height, ColorComponents colorComponents, int originalFrameCount)
 		{
-			using (var stream = _assembly.OpenResourceStream(fileName))
+			using (Stream stream = _assembly.OpenResourceStream(fileName))
 			{
 				var frameCount = 0;
-				foreach(var frame in ImageResult.AnimatedGifFramesFromStream(stream))
+				foreach(AnimatedFrameResult frame in ImageResult.AnimatedGifFramesFromStream(stream))
 				{
 					Assert.Equal(width, frame.Width);
 					Assert.Equal(height, frame.Height);
@@ -107,13 +107,13 @@ namespace StbImageSharp.Tests
 					Assert.NotNull(frame.Data);
 					Assert.Equal(frame.Width * frame.Height * (int)frame.Comp, frame.Data.Length);
 
-					++frameCount;
-				}
+                    ++frameCount;
+                }
 
 				Assert.Equal(frameCount, originalFrameCount);
 
-				stream.Seek(0, SeekOrigin.Begin);
-			}
+                stream.Seek(0, SeekOrigin.Begin);
+            }
 
 			Assert.Equal(0, StbImage.NativeAllocations);
 		}
