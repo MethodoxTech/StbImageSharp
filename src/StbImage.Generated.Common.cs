@@ -177,9 +177,9 @@ namespace StbImageSharp
 
         public static float* stbi__ldr_to_hdr(byte* data, int x, int y, int comp)
         {
-            var i = 0;
-            var k = 0;
-            var n = 0;
+            int i = 0;
+            int k = 0;
+            int n = 0;
             float* output;
             if (data == null)
                 return null;
@@ -226,7 +226,7 @@ namespace StbImageSharp
                 return stbi__jpeg_load(s, x, y, comp, req_comp, ri);
             if (stbi__hdr_test(s) != 0)
             {
-                var hdr = stbi__hdr_load(s, x, y, comp, req_comp, ri);
+                float* hdr = stbi__hdr_load(s, x, y, comp, req_comp, ri);
                 return stbi__hdr_to_ldr(hdr, *x, *y, req_comp != 0 ? req_comp : *comp);
             }
 
@@ -237,8 +237,8 @@ namespace StbImageSharp
 
         public static byte* stbi__convert_16_to_8(ushort* orig, int w, int h, int channels)
         {
-            var i = 0;
-            var img_len = w * h * channels;
+            int i = 0;
+            int img_len = w * h * channels;
             byte* reduced;
             reduced = (byte*)stbi__malloc((ulong)img_len);
             if (reduced == null)
@@ -252,8 +252,8 @@ namespace StbImageSharp
 
         public static ushort* stbi__convert_8_to_16(byte* orig, int w, int h, int channels)
         {
-            var i = 0;
-            var img_len = w * h * channels;
+            int i = 0;
+            int img_len = w * h * channels;
             ushort* enlarged;
             enlarged = (ushort*)stbi__malloc((ulong)(img_len * 2));
             if (enlarged == null)
@@ -267,18 +267,18 @@ namespace StbImageSharp
 
         public static void stbi__vertical_flip(void* image, int w, int h, int bytes_per_pixel)
         {
-            var row = 0;
-            var bytes_per_row = w * bytes_per_pixel;
-            var temp = stackalloc byte[2048];
-            var bytes = (byte*)image;
+            int row = 0;
+            int bytes_per_row = w * bytes_per_pixel;
+            byte* temp = stackalloc byte[2048];
+            byte* bytes = (byte*)image;
             for (row = 0; row < h >> 1; row++)
             {
-                var row0 = bytes + row * bytes_per_row;
-                var row1 = bytes + (h - row - 1) * bytes_per_row;
-                var bytes_left = (ulong)bytes_per_row;
+                byte* row0 = bytes + row * bytes_per_row;
+                byte* row1 = bytes + (h - row - 1) * bytes_per_row;
+                ulong bytes_left = (ulong)bytes_per_row;
                 while (bytes_left != 0)
                 {
-                    var bytes_copy = bytes_left < 2048 * sizeof(byte) ? bytes_left : 2048 * sizeof(byte);
+                    ulong bytes_copy = bytes_left < 2048 * sizeof(byte) ? bytes_left : 2048 * sizeof(byte);
                     CRuntime.memcpy(temp, row0, bytes_copy);
                     CRuntime.memcpy(row0, row1, bytes_copy);
                     CRuntime.memcpy(row1, temp, bytes_copy);
@@ -291,9 +291,9 @@ namespace StbImageSharp
 
         public static void stbi__vertical_flip_slices(void* image, int w, int h, int z, int bytes_per_pixel)
         {
-            var slice = 0;
-            var slice_size = w * h * bytes_per_pixel;
-            var bytes = (byte*)image;
+            int slice = 0;
+            int slice_size = w * h * bytes_per_pixel;
+            byte* bytes = (byte*)image;
             for (slice = 0; slice < z; ++slice)
             {
                 stbi__vertical_flip(bytes, w, h, bytes_per_pixel);
@@ -304,7 +304,7 @@ namespace StbImageSharp
         public static byte* stbi__load_and_postprocess_8bit(stbi__context s, int* x, int* y, int* comp, int req_comp)
         {
             stbi__result_info ri = new stbi__result_info();
-            var result = stbi__load_main(s, x, y, comp, req_comp, &ri, 8);
+            void* result = stbi__load_main(s, x, y, comp, req_comp, &ri, 8);
             if (result == null)
                 return null;
             if (ri.bits_per_channel != 8)
@@ -317,7 +317,7 @@ namespace StbImageSharp
                 ? stbi__vertically_flip_on_load_local
                 : stbi__vertically_flip_on_load_global) != 0)
             {
-                var channels = req_comp != 0 ? req_comp : *comp;
+                int channels = req_comp != 0 ? req_comp : *comp;
                 stbi__vertical_flip(result, *x, *y, channels * sizeof(byte));
             }
 
@@ -327,7 +327,7 @@ namespace StbImageSharp
         public static ushort* stbi__load_and_postprocess_16bit(stbi__context s, int* x, int* y, int* comp, int req_comp)
         {
             stbi__result_info ri = new stbi__result_info();
-            var result = stbi__load_main(s, x, y, comp, req_comp, &ri, 16);
+            void* result = stbi__load_main(s, x, y, comp, req_comp, &ri, 16);
             if (result == null)
                 return null;
             if (ri.bits_per_channel != 16)
@@ -340,7 +340,7 @@ namespace StbImageSharp
                 ? stbi__vertically_flip_on_load_local
                 : stbi__vertically_flip_on_load_global) != 0)
             {
-                var channels = req_comp != 0 ? req_comp : *comp;
+                int channels = req_comp != 0 ? req_comp : *comp;
                 stbi__vertical_flip(result, *x, *y, channels * sizeof(ushort));
             }
 
@@ -353,7 +353,7 @@ namespace StbImageSharp
                 ? stbi__vertically_flip_on_load_local
                 : stbi__vertically_flip_on_load_global) != 0 && result != null)
             {
-                var channels = req_comp != 0 ? req_comp : *comp;
+                int channels = req_comp != 0 ? req_comp : *comp;
                 stbi__vertical_flip(result, *x, *y, channels * sizeof(float));
             }
         }
@@ -364,7 +364,7 @@ namespace StbImageSharp
             if (stbi__hdr_test(s) != 0)
             {
                 stbi__result_info ri = new stbi__result_info();
-                var hdr_data = stbi__hdr_load(s, x, y, comp, req_comp, &ri);
+                float* hdr_data = stbi__hdr_load(s, x, y, comp, req_comp, &ri);
                 if (hdr_data != null)
                     stbi__float_postprocess(hdr_data, x, y, comp, req_comp);
                 return hdr_data;
@@ -384,7 +384,7 @@ namespace StbImageSharp
 
         public static uint stbi__get32be(stbi__context s)
         {
-            var z = (uint)stbi__get16be(s);
+            uint z = (uint)stbi__get16be(s);
             return (uint)((z << 16) + stbi__get16be(s));
         }
 
@@ -396,7 +396,7 @@ namespace StbImageSharp
 
         public static uint stbi__get32le(stbi__context s)
         {
-            var z = (uint)stbi__get16le(s);
+            uint z = (uint)stbi__get16le(s);
             z += (uint)stbi__get16le(s) << 16;
             return z;
         }
@@ -408,8 +408,8 @@ namespace StbImageSharp
 
         public static byte* stbi__convert_format(byte* data, int img_n, int req_comp, uint x, uint y)
         {
-            var i = 0;
-            var j = 0;
+            int i = 0;
+            int j = 0;
             byte* good;
             if (req_comp == img_n)
                 return data;
@@ -422,8 +422,8 @@ namespace StbImageSharp
 
             for (j = 0; j < (int)y; ++j)
             {
-                var src = data + j * x * img_n;
-                var dest = good + j * x * req_comp;
+                byte* src = data + j * x * img_n;
+                byte* dest = good + j * x * req_comp;
                 switch (img_n * 8 + req_comp)
                 {
                     case 1 * 8 + 2:
@@ -529,8 +529,8 @@ namespace StbImageSharp
 
         public static ushort* stbi__convert_format16(ushort* data, int img_n, int req_comp, uint x, uint y)
         {
-            var i = 0;
-            var j = 0;
+            int i = 0;
+            int j = 0;
             ushort* good;
             if (req_comp == img_n)
                 return data;
@@ -543,8 +543,8 @@ namespace StbImageSharp
 
             for (j = 0; j < (int)y; ++j)
             {
-                var src = data + j * x * img_n;
-                var dest = good + j * x * req_comp;
+                ushort* src = data + j * x * img_n;
+                ushort* dest = good + j * x * req_comp;
                 switch (img_n * 8 + req_comp)
                 {
                     case 1 * 8 + 2:
@@ -658,7 +658,7 @@ namespace StbImageSharp
 
         public static byte stbi__blinn_8x8(byte x, byte y)
         {
-            var t = (uint)(x * y + 128);
+            uint t = (uint)(x * y + 128);
             return (byte)((t + (t >> 8)) >> 8);
         }
 
@@ -678,7 +678,7 @@ namespace StbImageSharp
 
         public static int stbi__high_bit(uint z)
         {
-            var n = 0;
+            int n = 0;
             if (z == 0)
                 return -1;
             if (z >= 0x10000)

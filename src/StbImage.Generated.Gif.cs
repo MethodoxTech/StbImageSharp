@@ -9,7 +9,7 @@ namespace StbImageSharp
     {
         public static int stbi__gif_test(stbi__context s)
         {
-            var r = stbi__gif_test_raw(s);
+            int r = stbi__gif_test_raw(s);
             stbi__rewind(s);
             return r;
         }
@@ -42,14 +42,14 @@ namespace StbImageSharp
         {
             if (stbi__gif_test(s) != 0)
             {
-                var layers = 0;
+                int layers = 0;
                 byte* u = null;
                 byte* _out_ = null;
                 byte* two_back = null;
                 stbi__gif g = new stbi__gif();
-                var stride = 0;
-                var out_size = 0;
-                var delays_size = 0;
+                int stride = 0;
+                int out_size = 0;
+                int delays_size = 0;
                 if (delays != null)
                     *delays = null;
                 do
@@ -70,7 +70,7 @@ namespace StbImageSharp
                             out_size = layers * stride;
                             if (delays != null)
                             {
-                                var new_delays = (int*)CRuntime.realloc(*delays, (ulong)(sizeof(int) * layers));
+                                int* new_delays = (int*)CRuntime.realloc(*delays, (ulong)(sizeof(int) * layers));
                                 if (new_delays == null)
                                     return stbi__load_gif_main_outofmem(g, _out_, delays);
                                 *delays = new_delays;
@@ -119,7 +119,7 @@ namespace StbImageSharp
 
         public static int stbi__gif_test_raw(stbi__context s)
         {
-            var sz = 0;
+            int sz = 0;
             if (stbi__get8(s) != 71 || stbi__get8(s) != 73 || stbi__get8(s) != 70 || stbi__get8(s) != 56)
                 return 0;
             sz = stbi__get8(s);
@@ -132,7 +132,7 @@ namespace StbImageSharp
 
         public static void stbi__gif_parse_colortable(stbi__context s, byte[][] pal, int num_entries, int transp)
         {
-            var i = 0;
+            int i = 0;
             for (i = 0; i < num_entries; ++i)
             {
                 pal[i][2] = stbi__get8(s);
@@ -193,7 +193,7 @@ namespace StbImageSharp
         public static void stbi__out_gif_code(stbi__gif g, ushort code)
         {
             byte* p;
-            var idx = 0;
+            int idx = 0;
             if (g.codes[code].prefix >= 0)
                 stbi__out_gif_code(g, (ushort)g.codes[code].prefix);
             if (g.cur_y >= g.max_y)
@@ -201,7 +201,7 @@ namespace StbImageSharp
             idx = g.cur_x + g.cur_y;
             p = &g._out_[idx];
             g.history[idx / 4] = 1;
-            var c = g.color_table[g.codes[code].suffix];
+            byte[] c = g.color_table[g.codes[code].suffix];
             if (c[3] > 128)
             {
                 p[0] = c[2];
@@ -227,16 +227,16 @@ namespace StbImageSharp
         public static byte* stbi__process_gif_raster(stbi__context s, stbi__gif g)
         {
             byte lzw_cs = 0;
-            var len = 0;
-            var init_code = 0;
+            int len = 0;
+            int init_code = 0;
             uint first = 0;
-            var codesize = 0;
-            var codemask = 0;
-            var avail = 0;
-            var oldcode = 0;
-            var bits = 0;
-            var valid_bits = 0;
-            var clear = 0;
+            int codesize = 0;
+            int codemask = 0;
+            int avail = 0;
+            int oldcode = 0;
+            int bits = 0;
+            int valid_bits = 0;
+            int clear = 0;
             stbi__gif_lzw* p;
             lzw_cs = stbi__get8(s);
             if (lzw_cs > 12)
@@ -273,7 +273,7 @@ namespace StbImageSharp
                 }
                 else
                 {
-                    var code = bits & codemask;
+                    int code = bits & codemask;
                     bits >>= codesize;
                     valid_bits -= codesize;
                     if (code == clear)
@@ -330,10 +330,10 @@ namespace StbImageSharp
 
         public static byte* stbi__gif_load_next(stbi__context s, stbi__gif g, int* comp, int req_comp, byte* two_back)
         {
-            var dispose = 0;
-            var first_frame = 0;
-            var pi = 0;
-            var pcount = 0;
+            int dispose = 0;
+            int first_frame = 0;
+            int pi = 0;
+            int pcount = 0;
             first_frame = 0;
             if (g._out_ == null)
             {
@@ -382,10 +382,10 @@ namespace StbImageSharp
                 {
                     case 0x2C:
                         {
-                            var x = 0;
-                            var y = 0;
-                            var w = 0;
-                            var h = 0;
+                            int x = 0;
+                            int y = 0;
+                            int w = 0;
+                            int h = 0;
                             byte* o;
                             x = stbi__get16le(s);
                             y = stbi__get16le(s);
@@ -449,7 +449,7 @@ namespace StbImageSharp
 
                     case 0x21:
                         {
-                            var len = 0;
+                            int len = 0;
                             int ext = stbi__get8(s);
                             if (ext == 0xF9)
                             {

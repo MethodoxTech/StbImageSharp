@@ -9,7 +9,7 @@ namespace StbImageSharp
     {
         public static int stbi__bmp_test(stbi__context s)
         {
-            var r = stbi__bmp_test_raw(s);
+            int r = stbi__bmp_test_raw(s);
             stbi__rewind(s);
             return r;
         }
@@ -23,14 +23,14 @@ namespace StbImageSharp
             uint mb = 0;
             uint ma = 0;
             uint all_a = 0;
-            var pal = Utility.CreateArray<byte>(256, 4);
-            var psize = 0;
-            var i = 0;
-            var j = 0;
-            var width = 0;
-            var flip_vertically = 0;
-            var pad = 0;
-            var target = 0;
+            byte[][] pal = Utility.CreateArray<byte>(256, 4);
+            int psize = 0;
+            int i = 0;
+            int j = 0;
+            int width = 0;
+            int flip_vertically = 0;
+            int pad = 0;
+            int target = 0;
             stbi__bmp_data info = new stbi__bmp_data();
             info.all_a = 255;
             if (stbi__bmp_parse_header(s, &info) == null)
@@ -59,9 +59,9 @@ namespace StbImageSharp
 
             if (psize == 0)
             {
-                var bytes_read_so_far = (int)s.Stream.Position;
-                var header_limit = 1024;
-                var extra_data_limit = 256 * 4;
+                int bytes_read_so_far = (int)s.Stream.Position;
+                int header_limit = 1024;
+                int extra_data_limit = 256 * 4;
                 if (bytes_read_so_far <= 0 || bytes_read_so_far > header_limit)
                     return (byte*)(ulong)(stbi__err("bad header") != 0 ? 0 : 0);
 
@@ -85,7 +85,7 @@ namespace StbImageSharp
                 return (byte*)(ulong)(stbi__err("outofmem") != 0 ? 0 : 0);
             if (info.bpp < 16)
             {
-                var z = 0;
+                int z = 0;
                 if (psize == 0 || psize > 256)
                 {
                     CRuntime.free(_out_);
@@ -125,11 +125,11 @@ namespace StbImageSharp
                 if (info.bpp == 1)
                     for (j = 0; j < (int)s.img_y; ++j)
                     {
-                        var bit_offset = 7;
+                        int bit_offset = 7;
                         int v = stbi__get8(s);
                         for (i = 0; i < (int)s.img_x; ++i)
                         {
-                            var color = (v >> bit_offset) & 0x1;
+                            int color = (v >> bit_offset) & 0x1;
                             _out_[z++] = pal[color][0];
                             _out_[z++] = pal[color][1];
                             _out_[z++] = pal[color][2];
@@ -152,7 +152,7 @@ namespace StbImageSharp
                         for (i = 0; i < (int)s.img_x; i += 2)
                         {
                             int v = stbi__get8(s);
-                            var v2 = 0;
+                            int v2 = 0;
                             if (info.bpp == 4)
                             {
                                 v2 = v & 15;
@@ -179,16 +179,16 @@ namespace StbImageSharp
             }
             else
             {
-                var rshift = 0;
-                var gshift = 0;
-                var bshift = 0;
-                var ashift = 0;
-                var rcount = 0;
-                var gcount = 0;
-                var bcount = 0;
-                var acount = 0;
-                var z = 0;
-                var easy = 0;
+                int rshift = 0;
+                int gshift = 0;
+                int bshift = 0;
+                int ashift = 0;
+                int rcount = 0;
+                int gcount = 0;
+                int bcount = 0;
+                int acount = 0;
+                int z = 0;
+                int easy = 0;
                 stbi__skip(s, info.offset - info.extra_read - info.hsz);
                 if (info.bpp == 24)
                     width = (int)(3 * s.img_x);
@@ -245,10 +245,10 @@ namespace StbImageSharp
                     }
                     else
                     {
-                        var bpp = info.bpp;
+                        int bpp = info.bpp;
                         for (i = 0; i < (int)s.img_x; ++i)
                         {
-                            var v = bpp == 16 ? (uint)stbi__get16le(s) : stbi__get32le(s);
+                            uint v = bpp == 16 ? (uint)stbi__get16le(s) : stbi__get32le(s);
                             uint a = 0;
                             _out_[z++] = (byte)(stbi__shiftsigned(v & mr, rshift, rcount) & 255);
                             _out_[z++] = (byte)(stbi__shiftsigned(v & mg, gshift, gcount) & 255);
@@ -273,8 +273,8 @@ namespace StbImageSharp
                 byte t = 0;
                 for (j = 0; j < (int)s.img_y >> 1; ++j)
                 {
-                    var p1 = _out_ + j * s.img_x * target;
-                    var p2 = _out_ + (s.img_y - 1 - j) * s.img_x * target;
+                    byte* p1 = _out_ + j * s.img_x * target;
+                    byte* p2 = _out_ + (s.img_y - 1 - j) * s.img_x * target;
                     for (i = 0; i < (int)s.img_x * target; ++i)
                     {
                         t = p1[i];
@@ -327,8 +327,8 @@ namespace StbImageSharp
 
         public static int stbi__bmp_test_raw(stbi__context s)
         {
-            var r = 0;
-            var sz = 0;
+            int r = 0;
+            int sz = 0;
             if (stbi__get8(s) != 66)
                 return 0;
             if (stbi__get8(s) != 77)
@@ -375,7 +375,7 @@ namespace StbImageSharp
 
         public static void* stbi__bmp_parse_header(stbi__context s, stbi__bmp_data* info)
         {
-            var hsz = 0;
+            int hsz = 0;
             if (stbi__get8(s) != 66 || stbi__get8(s) != 77)
                 return (byte*)(ulong)(stbi__err("not BMP") != 0 ? 0 : 0);
             stbi__get32le(s);
@@ -405,7 +405,7 @@ namespace StbImageSharp
             info->bpp = stbi__get16le(s);
             if (hsz != 12)
             {
-                var compress = (int)stbi__get32le(s);
+                int compress = (int)stbi__get32le(s);
                 if (compress == 1 || compress == 2)
                     return (byte*)(ulong)(stbi__err("BMP RLE") != 0 ? 0 : 0);
                 if (compress >= 4)
@@ -450,7 +450,7 @@ namespace StbImageSharp
                 }
                 else
                 {
-                    var i = 0;
+                    int i = 0;
                     if (hsz != 108 && hsz != 124)
                         return (byte*)(ulong)(stbi__err("bad BMP") != 0 ? 0 : 0);
                     info->mr = stbi__get32le(s);

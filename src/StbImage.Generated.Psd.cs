@@ -8,7 +8,7 @@ namespace StbImageSharp
     {
         public static int stbi__psd_test(stbi__context s)
         {
-            var r = stbi__get32be(s) == 0x38425053 ? 1 : 0;
+            int r = stbi__get32be(s) == 0x38425053 ? 1 : 0;
             stbi__rewind(s);
             return r;
         }
@@ -16,14 +16,14 @@ namespace StbImageSharp
         public static void* stbi__psd_load(stbi__context s, int* x, int* y, int* comp, int req_comp,
             stbi__result_info* ri, int bpc)
         {
-            var pixelCount = 0;
-            var channelCount = 0;
-            var compression = 0;
-            var channel = 0;
-            var i = 0;
-            var bitdepth = 0;
-            var w = 0;
-            var h = 0;
+            int pixelCount = 0;
+            int channelCount = 0;
+            int compression = 0;
+            int channel = 0;
+            int i = 0;
+            int bitdepth = 0;
+            int w = 0;
+            int h = 0;
             byte* _out_;
             if (stbi__get32be(s) != 0x38425053)
                 return (byte*)(ulong)(stbi__err("not PSD") != 0 ? 0 : 0);
@@ -94,15 +94,15 @@ namespace StbImageSharp
                     {
                         if (bitdepth == 16 && bpc == 16)
                         {
-                            var q = (ushort*)_out_ + channel;
-                            var val = (ushort)(channel == 3 ? 65535 : 0);
+                            ushort* q = (ushort*)_out_ + channel;
+                            ushort val = (ushort)(channel == 3 ? 65535 : 0);
                             for (i = 0; i < pixelCount; i++, q += 4)
                                 *q = val;
                         }
                         else
                         {
-                            var p = _out_ + channel;
-                            var val = (byte)(channel == 3 ? 255 : 0);
+                            byte* p = _out_ + channel;
+                            byte val = (byte)(channel == 3 ? 255 : 0);
                             for (i = 0; i < pixelCount; i++, p += 4)
                                 *p = val;
                         }
@@ -111,13 +111,13 @@ namespace StbImageSharp
                     {
                         if (ri->bits_per_channel == 16)
                         {
-                            var q = (ushort*)_out_ + channel;
+                            ushort* q = (ushort*)_out_ + channel;
                             for (i = 0; i < pixelCount; i++, q += 4)
                                 *q = (ushort)stbi__get16be(s);
                         }
                         else
                         {
-                            var p = _out_ + channel;
+                            byte* p = _out_ + channel;
                             if (bitdepth == 16)
                                 for (i = 0; i < pixelCount; i++, p += 4)
                                     *p = (byte)(stbi__get16be(s) >> 8);
@@ -133,12 +133,12 @@ namespace StbImageSharp
                 if (ri->bits_per_channel == 16)
                     for (i = 0; i < w * h; ++i)
                     {
-                        var pixel = (ushort*)_out_ + 4 * i;
+                        ushort* pixel = (ushort*)_out_ + 4 * i;
                         if (pixel[3] != 0 && pixel[3] != 65535)
                         {
-                            var a = pixel[3] / 65535.0f;
-                            var ra = 1.0f / a;
-                            var inv_a = 65535.0f * (1 - ra);
+                            float a = pixel[3] / 65535.0f;
+                            float ra = 1.0f / a;
+                            float inv_a = 65535.0f * (1 - ra);
                             pixel[0] = (ushort)(pixel[0] * ra + inv_a);
                             pixel[1] = (ushort)(pixel[1] * ra + inv_a);
                             pixel[2] = (ushort)(pixel[2] * ra + inv_a);
@@ -147,12 +147,12 @@ namespace StbImageSharp
                 else
                     for (i = 0; i < w * h; ++i)
                     {
-                        var pixel = _out_ + 4 * i;
+                        byte* pixel = _out_ + 4 * i;
                         if (pixel[3] != 0 && pixel[3] != 255)
                         {
-                            var a = pixel[3] / 255.0f;
-                            var ra = 1.0f / a;
-                            var inv_a = 255.0f * (1 - ra);
+                            float a = pixel[3] / 255.0f;
+                            float ra = 1.0f / a;
+                            float inv_a = 255.0f * (1 - ra);
                             pixel[0] = (byte)(pixel[0] * ra + inv_a);
                             pixel[1] = (byte)(pixel[1] * ra + inv_a);
                             pixel[2] = (byte)(pixel[2] * ra + inv_a);
@@ -179,9 +179,9 @@ namespace StbImageSharp
 
         public static int stbi__psd_info(stbi__context s, int* x, int* y, int* comp)
         {
-            var channelCount = 0;
-            var dummy = 0;
-            var depth = 0;
+            int channelCount = 0;
+            int dummy = 0;
+            int depth = 0;
             if (x == null)
                 x = &dummy;
             if (y == null)
@@ -229,8 +229,8 @@ namespace StbImageSharp
 
         public static int stbi__psd_is16(stbi__context s)
         {
-            var channelCount = 0;
-            var depth = 0;
+            int channelCount = 0;
+            int depth = 0;
             if (stbi__get32be(s) != 0x38425053)
             {
                 stbi__rewind(s);
@@ -263,9 +263,9 @@ namespace StbImageSharp
 
         public static int stbi__psd_decode_rle(stbi__context s, byte* p, int pixelCount)
         {
-            var count = 0;
-            var nleft = 0;
-            var len = 0;
+            int count = 0;
+            int nleft = 0;
+            int len = 0;
             count = 0;
             while ((nleft = pixelCount - count) > 0)
             {

@@ -8,7 +8,7 @@ namespace StbImageSharp
     {
         public static int stbi__hdr_test(stbi__context s)
         {
-            var r = stbi__hdr_test_core(s, "#?RADIANCE\n");
+            int r = stbi__hdr_test_core(s, "#?RADIANCE\n");
             stbi__rewind(s);
             if (r == 0)
             {
@@ -22,23 +22,23 @@ namespace StbImageSharp
         public static float* stbi__hdr_load(stbi__context s, int* x, int* y, int* comp, int req_comp,
             stbi__result_info* ri)
         {
-            var rgbe = stackalloc byte[4];
-            var buffer = stackalloc sbyte[1024];
+            byte* rgbe = stackalloc byte[4];
+            sbyte* buffer = stackalloc sbyte[1024];
             sbyte* token;
-            var valid = 0;
-            var width = 0;
-            var height = 0;
+            int valid = 0;
+            int width = 0;
+            int height = 0;
             byte* scanline;
             float* hdr_data;
-            var len = 0;
+            int len = 0;
             byte count = 0;
             byte value = 0;
-            var i = 0;
-            var j = 0;
-            var k = 0;
-            var c1 = 0;
-            var c2 = 0;
-            var z = 0;
+            int i = 0;
+            int j = 0;
+            int k = 0;
+            int c1 = 0;
+            int c2 = 0;
+            int z = 0;
             sbyte* headerToken;
             headerToken = stbi__hdr_gettoken(s, buffer);
             if (CRuntime.strcmp(headerToken, "#?RADIANCE") != 0 && CRuntime.strcmp(headerToken, "#?RGBE") != 0)
@@ -157,7 +157,7 @@ namespace StbImageSharp
 
                     for (k = 0; k < 4; ++k)
                     {
-                        var nleft = 0;
+                        int nleft = 0;
                         i = 0;
                         while ((nleft = width - i) > 0)
                         {
@@ -205,10 +205,10 @@ namespace StbImageSharp
 
         public static int stbi__hdr_info(stbi__context s, int* x, int* y, int* comp)
         {
-            var buffer = stackalloc sbyte[1024];
+            sbyte* buffer = stackalloc sbyte[1024];
             sbyte* token;
-            var valid = 0;
-            var dummy = 0;
+            int valid = 0;
+            int dummy = 0;
             if (x == null)
                 x = &dummy;
             if (y == null)
@@ -261,9 +261,9 @@ namespace StbImageSharp
 
         public static byte* stbi__hdr_to_ldr(float* data, int x, int y, int comp)
         {
-            var i = 0;
-            var k = 0;
-            var n = 0;
+            int i = 0;
+            int k = 0;
+            int n = 0;
             byte* output;
             if (data == null)
                 return null;
@@ -282,7 +282,7 @@ namespace StbImageSharp
             {
                 for (k = 0; k < n; ++k)
                 {
-                    var z = (float)CRuntime.pow(data[i * comp + k] * stbi__h2l_scale_i, stbi__h2l_gamma_i) * 255 +
+                    float z = (float)CRuntime.pow(data[i * comp + k] * stbi__h2l_scale_i, stbi__h2l_gamma_i) * 255 +
                             0.5f;
                     if (z < 0)
                         z = 0;
@@ -293,7 +293,7 @@ namespace StbImageSharp
 
                 if (k < comp)
                 {
-                    var z = data[i * comp + k] * 255 + 0.5f;
+                    float z = data[i * comp + k] * 255 + 0.5f;
                     if (z < 0)
                         z = 0;
                     if (z > 255)
@@ -308,7 +308,7 @@ namespace StbImageSharp
 
         public static int stbi__hdr_test_core(stbi__context s, string signature)
         {
-            var i = 0;
+            int i = 0;
             for (i = 0; i < signature.Length; ++i)
                 if (stbi__get8(s) != signature[i])
                     return 0;
@@ -318,7 +318,7 @@ namespace StbImageSharp
 
         public static sbyte* stbi__hdr_gettoken(stbi__context z, sbyte* buffer)
         {
-            var len = 0;
+            int len = 0;
             sbyte c = 0;
             c = (sbyte)stbi__get8(z);
             while (stbi__at_eof(z) == 0 && c != 10)

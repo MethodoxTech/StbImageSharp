@@ -43,7 +43,7 @@ namespace StbImageSharp
         public static sbyte* stbi_zlib_decode_malloc_guesssize(sbyte* buffer, int len, int initial_size, int* outlen)
         {
             stbi__zbuf a = new stbi__zbuf();
-            var p = (sbyte*)stbi__malloc((ulong)initial_size);
+            sbyte* p = (sbyte*)stbi__malloc((ulong)initial_size);
             if (p == null)
                 return null;
             a.zbuffer = (byte*)buffer;
@@ -63,7 +63,7 @@ namespace StbImageSharp
             int* outlen, int parse_header)
         {
             stbi__zbuf a = new stbi__zbuf();
-            var p = (sbyte*)stbi__malloc((ulong)initial_size);
+            sbyte* p = (sbyte*)stbi__malloc((ulong)initial_size);
             if (p == null)
                 return null;
             a.zbuffer = (byte*)buffer;
@@ -97,7 +97,7 @@ namespace StbImageSharp
         public static sbyte* stbi_zlib_decode_noheader_malloc(sbyte* buffer, int len, int* outlen)
         {
             stbi__zbuf a = new stbi__zbuf();
-            var p = (sbyte*)stbi__malloc(16384);
+            sbyte* p = (sbyte*)stbi__malloc(16384);
             if (p == null)
                 return null;
             a.zbuffer = (byte*)buffer;
@@ -125,11 +125,11 @@ namespace StbImageSharp
 
         public static int stbi__zbuild_huffman(stbi__zhuffman* z, byte* sizelist, int num)
         {
-            var i = 0;
-            var k = 0;
-            var code = 0;
-            var next_code = stackalloc int[16];
-            var sizes = stackalloc int[17];
+            int i = 0;
+            int k = 0;
+            int code = 0;
+            int* next_code = stackalloc int[16];
+            int* sizes = stackalloc int[17];
             CRuntime.memset(sizes, 0, (ulong)(17 * sizeof(int)));
             CRuntime.memset(z->fast, 0, (ulong)(512 * sizeof(ushort)));
             for (i = 0; i < num; ++i)
@@ -161,13 +161,13 @@ namespace StbImageSharp
                 int s = sizelist[i];
                 if (s != 0)
                 {
-                    var c = next_code[s] - z->firstcode[s] + z->firstsymbol[s];
-                    var fastv = (ushort)((s << 9) | i);
+                    int c = next_code[s] - z->firstcode[s] + z->firstsymbol[s];
+                    ushort fastv = (ushort)((s << 9) | i);
                     z->size[c] = (byte)s;
                     z->value[c] = (ushort)i;
                     if (s <= 9)
                     {
-                        var j = stbi__bit_reverse(next_code[s], s);
+                        int j = stbi__bit_reverse(next_code[s], s);
                         while (j < 1 << 9)
                         {
                             z->fast[j] = fastv;
@@ -220,9 +220,9 @@ namespace StbImageSharp
 
         public static int stbi__zhuffman_decode_slowpath(stbi__zbuf* a, stbi__zhuffman* z)
         {
-            var b = 0;
-            var s = 0;
-            var k = 0;
+            int b = 0;
+            int s = 0;
+            int k = 0;
             k = stbi__bit_reverse((int)a->code_buffer, 16);
             for (s = 9 + 1; ; ++s)
                 if (k < z->maxcode[s])
@@ -242,8 +242,8 @@ namespace StbImageSharp
 
         public static int stbi__zhuffman_decode(stbi__zbuf* a, stbi__zhuffman* z)
         {
-            var b = 0;
-            var s = 0;
+            int b = 0;
+            int s = 0;
             if (a->num_bits < 16)
             {
                 if (stbi__zeof(a) != 0)
@@ -307,10 +307,10 @@ namespace StbImageSharp
 
         public static int stbi__parse_huffman_block(stbi__zbuf* a)
         {
-            var zout = a->zout;
+            sbyte* zout = a->zout;
             for (; ; )
             {
-                var z = stbi__zhuffman_decode(a, &a->z_length);
+                int z = stbi__zhuffman_decode(a, &a->z_length);
                 if (z < 256)
                 {
                     if (z < 0)
@@ -327,8 +327,8 @@ namespace StbImageSharp
                 else
                 {
                     byte* p;
-                    var len = 0;
-                    var dist = 0;
+                    int len = 0;
+                    int dist = 0;
                     if (z == 256)
                     {
                         a->zout = zout;
@@ -362,7 +362,7 @@ namespace StbImageSharp
                     p = (byte*)(zout - dist);
                     if (dist == 1)
                     {
-                        var v = *p;
+                        byte v = *p;
                         if (len != 0)
                             do
                             {
@@ -384,18 +384,18 @@ namespace StbImageSharp
         public static int stbi__compute_huffman_codes(stbi__zbuf* a)
         {
             stbi__zhuffman z_codelength = new stbi__zhuffman();
-            var lencodes = stackalloc byte[455];
-            var codelength_sizes = stackalloc byte[19];
-            var i = 0;
-            var n = 0;
-            var hlit = (int)(stbi__zreceive(a, 5) + 257);
-            var hdist = (int)(stbi__zreceive(a, 5) + 1);
-            var hclen = (int)(stbi__zreceive(a, 4) + 4);
-            var ntot = hlit + hdist;
+            byte* lencodes = stackalloc byte[455];
+            byte* codelength_sizes = stackalloc byte[19];
+            int i = 0;
+            int n = 0;
+            int hlit = (int)(stbi__zreceive(a, 5) + 257);
+            int hdist = (int)(stbi__zreceive(a, 5) + 1);
+            int hclen = (int)(stbi__zreceive(a, 4) + 4);
+            int ntot = hlit + hdist;
             CRuntime.memset(codelength_sizes, 0, (ulong)(19 * sizeof(byte)));
             for (i = 0; i < hclen; ++i)
             {
-                var s = (int)stbi__zreceive(a, 3);
+                int s = (int)stbi__zreceive(a, 3);
                 codelength_sizes[stbi__compute_huffman_codes_length_dezigzag[i]] = (byte)s;
             }
 
@@ -404,7 +404,7 @@ namespace StbImageSharp
             n = 0;
             while (n < ntot)
             {
-                var c = stbi__zhuffman_decode(a, &z_codelength);
+                int c = stbi__zhuffman_decode(a, &z_codelength);
                 if (c < 0 || c >= 19)
                     return stbi__err("bad codelengths");
                 if (c < 16)
@@ -452,10 +452,10 @@ namespace StbImageSharp
 
         public static int stbi__parse_uncompressed_block(stbi__zbuf* a)
         {
-            var header = stackalloc byte[4];
-            var len = 0;
-            var nlen = 0;
-            var k = 0;
+            byte* header = stackalloc byte[4];
+            int len = 0;
+            int nlen = 0;
+            int k = 0;
             if ((a->num_bits & 7) != 0)
                 stbi__zreceive(a, a->num_bits & 7);
             k = 0;
@@ -489,7 +489,7 @@ namespace StbImageSharp
         public static int stbi__parse_zlib_header(stbi__zbuf* a)
         {
             int cmf = stbi__zget8(a);
-            var cm = cmf & 15;
+            int cm = cmf & 15;
             int flg = stbi__zget8(a);
             if (stbi__zeof(a) != 0)
                 return stbi__err("bad zlib header");
@@ -504,8 +504,8 @@ namespace StbImageSharp
 
         public static int stbi__parse_zlib(stbi__zbuf* a, int parse_header)
         {
-            var final = 0;
-            var type = 0;
+            int final = 0;
+            int type = 0;
             if (parse_header != 0)
                 if (stbi__parse_zlib_header(a) == 0)
                     return 0;

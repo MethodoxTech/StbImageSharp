@@ -54,7 +54,7 @@ namespace StbImageSharp
             // Read next frame
             int ccomp;
             byte two_back;
-            var result = StbImage.stbi__gif_load_next(_context, _gif, &ccomp, (int)ColorComponents, &two_back);
+            byte* result = StbImage.stbi__gif_load_next(_context, _gif, &ccomp, (int)ColorComponents, &two_back);
             if (result == null) return false;
 
             if (Current == null)

@@ -28,7 +28,7 @@ namespace StbImageSharp
 
         public static int stbi__jpeg_test(stbi__context s)
         {
-            var r = 0;
+            int r = 0;
             stbi__jpeg j = new stbi__jpeg();
             if (j == null)
                 return stbi__err("outofmem");
@@ -54,7 +54,7 @@ namespace StbImageSharp
 
         public static int stbi__jpeg_info(stbi__context s, int* x, int* y, int* comp)
         {
-            var result = 0;
+            int result = 0;
             stbi__jpeg j = new stbi__jpeg();
             if (j == null)
                 return stbi__err("outofmem");
@@ -65,9 +65,9 @@ namespace StbImageSharp
 
         public static int stbi__build_huffman(stbi__huffman* h, int* count)
         {
-            var i = 0;
-            var j = 0;
-            var k = 0;
+            int i = 0;
+            int j = 0;
+            int k = 0;
             uint code = 0;
             for (i = 0; i < 16; ++i)
             {
@@ -105,8 +105,8 @@ namespace StbImageSharp
                 int s = h->size[i];
                 if (s <= 9)
                 {
-                    var c = h->code[i] << (9 - s);
-                    var m = 1 << (9 - s);
+                    int c = h->code[i] << (9 - s);
+                    int m = 1 << (9 - s);
                     for (j = 0; j < m; ++j)
                         h->fast[c + j] = (byte)i;
                 }
@@ -117,21 +117,21 @@ namespace StbImageSharp
 
         public static void stbi__build_fast_ac(short[] fast_ac, stbi__huffman* h)
         {
-            var i = 0;
+            int i = 0;
             for (i = 0; i < 1 << 9; ++i)
             {
-                var fast = h->fast[i];
+                byte fast = h->fast[i];
                 fast_ac[i] = 0;
                 if (fast < 255)
                 {
                     int rs = h->values[fast];
-                    var run = (rs >> 4) & 15;
-                    var magbits = rs & 15;
+                    int run = (rs >> 4) & 15;
+                    int magbits = rs & 15;
                     int len = h->size[fast];
                     if (magbits != 0 && len + magbits <= 9)
                     {
-                        var k = ((i << len) & ((1 << 9) - 1)) >> (9 - magbits);
-                        var m = 1 << (magbits - 1);
+                        int k = ((i << len) & ((1 << 9) - 1)) >> (9 - magbits);
+                        int m = 1 << (magbits - 1);
                         if (k < m)
                             k += (int)((~0U << magbits) + 1);
                         if (k >= -128 && k <= 127)
@@ -145,7 +145,7 @@ namespace StbImageSharp
         {
             do
             {
-                var b = (uint)(j.nomore != 0 ? 0 : stbi__get8(j.s));
+                uint b = (uint)(j.nomore != 0 ? 0 : stbi__get8(j.s));
                 if (b == 0xff)
                 {
                     int c = stbi__get8(j.s);
@@ -168,8 +168,8 @@ namespace StbImageSharp
         public static int stbi__jpeg_huff_decode(stbi__jpeg j, stbi__huffman* h)
         {
             uint temp = 0;
-            var c = 0;
-            var k = 0;
+            int c = 0;
+            int k = 0;
             if (j.code_bits < 16)
                 stbi__grow_buffer_unsafe(j);
             c = (int)((j.code_buffer >> (32 - 9)) & ((1 << 9) - 1));
@@ -208,7 +208,7 @@ namespace StbImageSharp
         public static int stbi__extend_receive(stbi__jpeg j, int n)
         {
             uint k = 0;
-            var sgn = 0;
+            int sgn = 0;
             if (j.code_bits < n)
                 stbi__grow_buffer_unsafe(j);
             if (j.code_bits < n)
@@ -251,10 +251,10 @@ namespace StbImageSharp
         public static int stbi__jpeg_decode_block(stbi__jpeg j, short* data, stbi__huffman* hdc, stbi__huffman* hac,
             short[] fac, int b, ushort[] dequant)
         {
-            var diff = 0;
-            var dc = 0;
-            var k = 0;
-            var t = 0;
+            int diff = 0;
+            int dc = 0;
+            int k = 0;
+            int t = 0;
             if (j.code_bits < 16)
                 stbi__grow_buffer_unsafe(j);
             t = stbi__jpeg_huff_decode(j, hdc);
@@ -273,9 +273,9 @@ namespace StbImageSharp
             do
             {
                 uint zig = 0;
-                var c = 0;
-                var r = 0;
-                var s = 0;
+                int c = 0;
+                int r = 0;
+                int s = 0;
                 if (j.code_bits < 16)
                     stbi__grow_buffer_unsafe(j);
                 c = (int)((j.code_buffer >> (32 - 9)) & ((1 << 9) - 1));
@@ -293,7 +293,7 @@ namespace StbImageSharp
                 }
                 else
                 {
-                    var rs = stbi__jpeg_huff_decode(j, hac);
+                    int rs = stbi__jpeg_huff_decode(j, hac);
                     if (rs < 0)
                         return stbi__err("bad huffman code");
                     s = rs & 15;
@@ -318,9 +318,9 @@ namespace StbImageSharp
 
         public static int stbi__jpeg_decode_block_prog_dc(stbi__jpeg j, short* data, stbi__huffman* hdc, int b)
         {
-            var diff = 0;
-            var dc = 0;
-            var t = 0;
+            int diff = 0;
+            int dc = 0;
+            int t = 0;
             if (j.spec_end != 0)
                 return stbi__err("can't merge dc and ac");
             if (j.code_bits < 16)
@@ -351,12 +351,12 @@ namespace StbImageSharp
 
         public static int stbi__jpeg_decode_block_prog_ac(stbi__jpeg j, short* data, stbi__huffman* hac, short[] fac)
         {
-            var k = 0;
+            int k = 0;
             if (j.spec_start == 0)
                 return stbi__err("can't merge dc and ac");
             if (j.succ_high == 0)
             {
-                var shift = j.succ_low;
+                int shift = j.succ_low;
                 if (j.eob_run != 0)
                 {
                     --j.eob_run;
@@ -367,9 +367,9 @@ namespace StbImageSharp
                 do
                 {
                     uint zig = 0;
-                    var c = 0;
-                    var r = 0;
-                    var s = 0;
+                    int c = 0;
+                    int r = 0;
+                    int s = 0;
                     if (j.code_bits < 16)
                         stbi__grow_buffer_unsafe(j);
                     c = (int)((j.code_buffer >> (32 - 9)) & ((1 << 9) - 1));
@@ -387,7 +387,7 @@ namespace StbImageSharp
                     }
                     else
                     {
-                        var rs = stbi__jpeg_huff_decode(j, hac);
+                        int rs = stbi__jpeg_huff_decode(j, hac);
                         if (rs < 0)
                             return stbi__err("bad huffman code");
                         s = rs & 15;
@@ -416,13 +416,13 @@ namespace StbImageSharp
             }
             else
             {
-                var bit = (short)(1 << j.succ_low);
+                short bit = (short)(1 << j.succ_low);
                 if (j.eob_run != 0)
                 {
                     --j.eob_run;
                     for (k = j.spec_start; k <= j.spec_end; ++k)
                     {
-                        var p = &data[stbi__jpeg_dezigzag[k]];
+                        short* p = &data[stbi__jpeg_dezigzag[k]];
                         if (*p != 0)
                             if (stbi__jpeg_get_bit(j) != 0)
                                 if ((*p & bit) == 0)
@@ -439,9 +439,9 @@ namespace StbImageSharp
                     k = j.spec_start;
                     do
                     {
-                        var r = 0;
-                        var s = 0;
-                        var rs = stbi__jpeg_huff_decode(j, hac);
+                        int r = 0;
+                        int s = 0;
+                        int rs = stbi__jpeg_huff_decode(j, hac);
                         if (rs < 0)
                             return stbi__err("bad huffman code");
                         s = rs & 15;
@@ -468,7 +468,7 @@ namespace StbImageSharp
 
                         while (k <= j.spec_end)
                         {
-                            var p = &data[stbi__jpeg_dezigzag[k++]];
+                            short* p = &data[stbi__jpeg_dezigzag[k++]];
                             if (*p != 0)
                             {
                                 if (stbi__jpeg_get_bit(j) != 0)
@@ -500,32 +500,32 @@ namespace StbImageSharp
 
         public static void stbi__idct_block(byte* _out_, int out_stride, short* data)
         {
-            var i = 0;
-            var val = stackalloc int[64];
-            var v = val;
+            int i = 0;
+            int* val = stackalloc int[64];
+            int* v = val;
             byte* o;
-            var d = data;
+            short* d = data;
             for (i = 0; i < 8; ++i, ++d, ++v)
                 if (d[8] == 0 && d[16] == 0 && d[24] == 0 && d[32] == 0 && d[40] == 0 && d[48] == 0 && d[56] == 0)
                 {
-                    var dcterm = d[0] * 4;
+                    int dcterm = d[0] * 4;
                     v[0] = v[8] = v[16] = v[24] = v[32] = v[40] = v[48] = v[56] = dcterm;
                 }
                 else
                 {
-                    var t0 = 0;
-                    var t1 = 0;
-                    var t2 = 0;
-                    var t3 = 0;
-                    var p1 = 0;
-                    var p2 = 0;
-                    var p3 = 0;
-                    var p4 = 0;
-                    var p5 = 0;
-                    var x0 = 0;
-                    var x1 = 0;
-                    var x2 = 0;
-                    var x3 = 0;
+                    int t0 = 0;
+                    int t1 = 0;
+                    int t2 = 0;
+                    int t3 = 0;
+                    int p1 = 0;
+                    int p2 = 0;
+                    int p3 = 0;
+                    int p4 = 0;
+                    int p5 = 0;
+                    int x0 = 0;
+                    int x1 = 0;
+                    int x2 = 0;
+                    int x3 = 0;
                     p2 = d[16];
                     p3 = d[48];
                     p1 = (p2 + p3) * (int)(0.5411961f * 4096 + 0.5);
@@ -576,19 +576,19 @@ namespace StbImageSharp
 
             for (i = 0, v = val, o = _out_; i < 8; ++i, v += 8, o += out_stride)
             {
-                var t0 = 0;
-                var t1 = 0;
-                var t2 = 0;
-                var t3 = 0;
-                var p1 = 0;
-                var p2 = 0;
-                var p3 = 0;
-                var p4 = 0;
-                var p5 = 0;
-                var x0 = 0;
-                var x1 = 0;
-                var x2 = 0;
-                var x3 = 0;
+                int t0 = 0;
+                int t1 = 0;
+                int t2 = 0;
+                int t3 = 0;
+                int p1 = 0;
+                int p2 = 0;
+                int p3 = 0;
+                int p4 = 0;
+                int p5 = 0;
+                int x0 = 0;
+                int x1 = 0;
+                int x2 = 0;
+                int x3 = 0;
                 p2 = v[2];
                 p3 = v[6];
                 p1 = (p2 + p3) * (int)(0.5411961f * 4096 + 0.5);
@@ -675,16 +675,16 @@ namespace StbImageSharp
             {
                 if (z.scan_n == 1)
                 {
-                    var i = 0;
-                    var j = 0;
-                    var data = stackalloc short[64];
-                    var n = z.order[0];
-                    var w = (z.img_comp[n].x + 7) >> 3;
-                    var h = (z.img_comp[n].y + 7) >> 3;
+                    int i = 0;
+                    int j = 0;
+                    short* data = stackalloc short[64];
+                    int n = z.order[0];
+                    int w = (z.img_comp[n].x + 7) >> 3;
+                    int h = (z.img_comp[n].y + 7) >> 3;
                     for (j = 0; j < h; ++j)
                         for (i = 0; i < w; ++i)
                         {
-                            var ha = z.img_comp[n].ha;
+                            int ha = z.img_comp[n].ha;
                             fixed (stbi__huffman* dptr = &z.huff_dc[z.img_comp[n].hd])
                             fixed (stbi__huffman* aptr = &z.huff_ac[ha])
                             {
@@ -708,24 +708,24 @@ namespace StbImageSharp
                 }
                 else
                 {
-                    var i = 0;
-                    var j = 0;
-                    var k = 0;
-                    var x = 0;
-                    var y = 0;
-                    var data = stackalloc short[64];
+                    int i = 0;
+                    int j = 0;
+                    int k = 0;
+                    int x = 0;
+                    int y = 0;
+                    short* data = stackalloc short[64];
                     for (j = 0; j < z.img_mcu_y; ++j)
                         for (i = 0; i < z.img_mcu_x; ++i)
                         {
                             for (k = 0; k < z.scan_n; ++k)
                             {
-                                var n = z.order[k];
+                                int n = z.order[k];
                                 for (y = 0; y < z.img_comp[n].v; ++y)
                                     for (x = 0; x < z.img_comp[n].h; ++x)
                                     {
-                                        var x2 = (i * z.img_comp[n].h + x) * 8;
-                                        var y2 = (j * z.img_comp[n].v + y) * 8;
-                                        var ha = z.img_comp[n].ha;
+                                        int x2 = (i * z.img_comp[n].h + x) * 8;
+                                        int y2 = (j * z.img_comp[n].v + y) * 8;
+                                        int ha = z.img_comp[n].ha;
 
                                         fixed (stbi__huffman* dptr = &z.huff_dc[z.img_comp[n].hd])
                                         fixed (stbi__huffman* aptr = &z.huff_ac[ha])
@@ -755,15 +755,15 @@ namespace StbImageSharp
 
             if (z.scan_n == 1)
             {
-                var i = 0;
-                var j = 0;
-                var n = z.order[0];
-                var w = (z.img_comp[n].x + 7) >> 3;
-                var h = (z.img_comp[n].y + 7) >> 3;
+                int i = 0;
+                int j = 0;
+                int n = z.order[0];
+                int w = (z.img_comp[n].x + 7) >> 3;
+                int h = (z.img_comp[n].y + 7) >> 3;
                 for (j = 0; j < h; ++j)
                     for (i = 0; i < w; ++i)
                     {
-                        var data = z.img_comp[n].coeff + 64 * (i + j * z.img_comp[n].coeff_w);
+                        short* data = z.img_comp[n].coeff + 64 * (i + j * z.img_comp[n].coeff_w);
                         if (z.spec_start == 0)
                         {
                             fixed (stbi__huffman* dptr = &z.huff_dc[z.img_comp[n].hd])
@@ -774,7 +774,7 @@ namespace StbImageSharp
                         }
                         else
                         {
-                            var ha = z.img_comp[n].ha;
+                            int ha = z.img_comp[n].ha;
                             fixed (stbi__huffman* aptr = &z.huff_ac[ha])
                             {
                                 if (stbi__jpeg_decode_block_prog_ac(z, data, aptr, z.fast_ac[ha]) == 0)
@@ -796,23 +796,23 @@ namespace StbImageSharp
             }
             else
             {
-                var i = 0;
-                var j = 0;
-                var k = 0;
-                var x = 0;
-                var y = 0;
+                int i = 0;
+                int j = 0;
+                int k = 0;
+                int x = 0;
+                int y = 0;
                 for (j = 0; j < z.img_mcu_y; ++j)
                     for (i = 0; i < z.img_mcu_x; ++i)
                     {
                         for (k = 0; k < z.scan_n; ++k)
                         {
-                            var n = z.order[k];
+                            int n = z.order[k];
                             for (y = 0; y < z.img_comp[n].v; ++y)
                                 for (x = 0; x < z.img_comp[n].h; ++x)
                                 {
-                                    var x2 = i * z.img_comp[n].h + x;
-                                    var y2 = j * z.img_comp[n].v + y;
-                                    var data = z.img_comp[n].coeff + 64 * (x2 + y2 * z.img_comp[n].coeff_w);
+                                    int x2 = i * z.img_comp[n].h + x;
+                                    int y2 = j * z.img_comp[n].v + y;
+                                    short* data = z.img_comp[n].coeff + 64 * (x2 + y2 * z.img_comp[n].coeff_w);
 
 
                                     fixed (stbi__huffman* dptr = &z.huff_dc[z.img_comp[n].hd])
@@ -839,7 +839,7 @@ namespace StbImageSharp
 
         public static void stbi__jpeg_dequantize(short* data, ushort[] dequant)
         {
-            var i = 0;
+            int i = 0;
             for (i = 0; i < 64; ++i)
                 data[i] *= (short)dequant[i];
         }
@@ -848,17 +848,17 @@ namespace StbImageSharp
         {
             if (z.progressive != 0)
             {
-                var i = 0;
-                var j = 0;
-                var n = 0;
+                int i = 0;
+                int j = 0;
+                int n = 0;
                 for (n = 0; n < z.s.img_n; ++n)
                 {
-                    var w = (z.img_comp[n].x + 7) >> 3;
-                    var h = (z.img_comp[n].y + 7) >> 3;
+                    int w = (z.img_comp[n].x + 7) >> 3;
+                    int h = (z.img_comp[n].y + 7) >> 3;
                     for (j = 0; j < h; ++j)
                         for (i = 0; i < w; ++i)
                         {
-                            var data = z.img_comp[n].coeff + 64 * (i + j * z.img_comp[n].coeff_w);
+                            short* data = z.img_comp[n].coeff + 64 * (i + j * z.img_comp[n].coeff_w);
                             stbi__jpeg_dequantize(data, z.dequant[z.img_comp[n].tq]);
                             z.idct_block_kernel(z.img_comp[n].data + z.img_comp[n].w2 * j * 8 + i * 8, z.img_comp[n].w2,
                                 data);
@@ -869,7 +869,7 @@ namespace StbImageSharp
 
         public static int stbi__process_marker(stbi__jpeg z, int m)
         {
-            var L = 0;
+            int L = 0;
             switch (m)
             {
                 case 0xff:
@@ -884,10 +884,10 @@ namespace StbImageSharp
                     while (L > 0)
                     {
                         int q = stbi__get8(z.s);
-                        var p = q >> 4;
-                        var sixteen = p != 0 ? 1 : 0;
-                        var t = q & 15;
-                        var i = 0;
+                        int p = q >> 4;
+                        int sixteen = p != 0 ? 1 : 0;
+                        int t = q & 15;
+                        int i = 0;
                         if (p != 0 && p != 1)
                             return stbi__err("bad DQT type");
                         if (t > 3)
@@ -901,14 +901,14 @@ namespace StbImageSharp
                     return L == 0 ? 1 : 0;
                 case 0xC4:
                     L = stbi__get16be(z.s) - 2;
-                    var sizes = stackalloc int[16];
+                    int* sizes = stackalloc int[16];
                     while (L > 0)
                     {
-                        var i = 0;
-                        var n = 0;
+                        int i = 0;
+                        int n = 0;
                         int q = stbi__get8(z.s);
-                        var tc = q >> 4;
-                        var th = q & 15;
+                        int tc = q >> 4;
+                        int th = q & 15;
                         if (tc > 1 || th > 3)
                             return stbi__err("bad DHT header");
                         for (i = 0; i < 16; ++i)
@@ -927,7 +927,7 @@ namespace StbImageSharp
                                 if (stbi__build_huffman(hptr, sizes) == 0)
                                     return 0;
 
-                                var v = hptr->values;
+                                byte* v = hptr->values;
                                 for (i = 0; i < n; ++i)
                                     v[i] = stbi__get8(z.s);
                             }
@@ -939,7 +939,7 @@ namespace StbImageSharp
                                 if (stbi__build_huffman(aptr, sizes) == 0)
                                     return 0;
 
-                                var v = aptr->values;
+                                byte* v = aptr->values;
                                 for (i = 0; i < n; ++i)
                                     v[i] = stbi__get8(z.s);
                             }
@@ -969,8 +969,8 @@ namespace StbImageSharp
                 L -= 2;
                 if (m == 0xE0 && L >= 5)
                 {
-                    var ok = 1;
-                    var i = 0;
+                    int ok = 1;
+                    int i = 0;
                     for (i = 0; i < 5; ++i)
                         if (stbi__get8(z.s) != stbi__process_marker_tag[i])
                             ok = 0;
@@ -980,8 +980,8 @@ namespace StbImageSharp
                 }
                 else if (m == 0xEE && L >= 12)
                 {
-                    var ok = 1;
-                    var i = 0;
+                    int ok = 1;
+                    int i = 0;
                     for (i = 0; i < 6; ++i)
                         if (stbi__get8(z.s) != stbi__process_marker_tag[i])
                             ok = 0;
@@ -1005,8 +1005,8 @@ namespace StbImageSharp
 
         public static int stbi__process_scan_header(stbi__jpeg z)
         {
-            var i = 0;
-            var Ls = stbi__get16be(z.s);
+            int i = 0;
+            int Ls = stbi__get16be(z.s);
             z.scan_n = stbi__get8(z.s);
             if (z.scan_n < 1 || z.scan_n > 4 || z.scan_n > z.s.img_n)
                 return stbi__err("bad SOS component count");
@@ -1015,7 +1015,7 @@ namespace StbImageSharp
             for (i = 0; i < z.scan_n; ++i)
             {
                 int id = stbi__get8(z.s);
-                var which = 0;
+                int which = 0;
                 int q = stbi__get8(z.s);
                 for (which = 0; which < z.s.img_n; ++which)
                     if (z.img_comp[which].id == id)
@@ -1033,7 +1033,7 @@ namespace StbImageSharp
             }
 
             {
-                var aa = 0;
+                int aa = 0;
                 z.spec_start = stbi__get8(z.s);
                 z.spec_end = stbi__get8(z.s);
                 aa = stbi__get8(z.s);
@@ -1060,7 +1060,7 @@ namespace StbImageSharp
 
         public static int stbi__free_jpeg_components(stbi__jpeg z, int ncomp, int why)
         {
-            var i = 0;
+            int i = 0;
             for (i = 0; i < ncomp; ++i)
             {
                 if (z.img_comp[i].raw_data != null)
@@ -1090,13 +1090,13 @@ namespace StbImageSharp
         public static int stbi__process_frame_header(stbi__jpeg z, int scan)
         {
             stbi__context s = z.s;
-            var Lf = 0;
-            var p = 0;
-            var i = 0;
-            var q = 0;
-            var h_max = 1;
-            var v_max = 1;
-            var c = 0;
+            int Lf = 0;
+            int p = 0;
+            int i = 0;
+            int q = 0;
+            int h_max = 1;
+            int v_max = 1;
+            int c = 0;
             Lf = stbi__get16be(s);
             if (Lf < 11)
                 return stbi__err("bad SOF len");
@@ -1198,7 +1198,7 @@ namespace StbImageSharp
 
         public static int stbi__decode_jpeg_header(stbi__jpeg z, int scan)
         {
-            var m = 0;
+            int m = 0;
             z.jfif = 0;
             z.app14_color_transform = -1;
             z.marker = 0xff;
@@ -1231,7 +1231,7 @@ namespace StbImageSharp
         {
             while (stbi__at_eof(j.s) == 0)
             {
-                var x = stbi__get8(j.s);
+                byte x = stbi__get8(j.s);
                 while (x == 0xff)
                 {
                     if (stbi__at_eof(j.s) != 0)
@@ -1247,7 +1247,7 @@ namespace StbImageSharp
 
         public static int stbi__decode_jpeg_image(stbi__jpeg j)
         {
-            var m = 0;
+            int m = 0;
             for (m = 0; m < 4; m++)
             {
                 j.img_comp[m].raw_data = null;
@@ -1274,8 +1274,8 @@ namespace StbImageSharp
                 }
                 else if (m == 0xdc)
                 {
-                    var Ld = stbi__get16be(j.s);
-                    var NL = (uint)stbi__get16be(j.s);
+                    int Ld = stbi__get16be(j.s);
+                    uint NL = (uint)stbi__get16be(j.s);
                     if (Ld != 4)
                         return stbi__err("bad DNL len");
                     if (NL != j.s.img_y)
@@ -1301,7 +1301,7 @@ namespace StbImageSharp
 
         public static byte* stbi__resample_row_v_2(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
         {
-            var i = 0;
+            int i = 0;
             for (i = 0; i < w; ++i)
                 _out_[i] = (byte)((3 * in_near[i] + in_far[i] + 2) >> 2);
 
@@ -1310,8 +1310,8 @@ namespace StbImageSharp
 
         public static byte* stbi__resample_row_h_2(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
         {
-            var i = 0;
-            var input = in_near;
+            int i = 0;
+            byte* input = in_near;
             if (w == 1)
             {
                 _out_[0] = _out_[1] = input[0];
@@ -1322,7 +1322,7 @@ namespace StbImageSharp
             _out_[1] = (byte)((input[0] * 3 + input[1] + 2) >> 2);
             for (i = 1; i < w - 1; ++i)
             {
-                var n = 3 * input[i] + 2;
+                int n = 3 * input[i] + 2;
                 _out_[i * 2 + 0] = (byte)((n + input[i - 1]) >> 2);
                 _out_[i * 2 + 1] = (byte)((n + input[i + 1]) >> 2);
             }
@@ -1334,9 +1334,9 @@ namespace StbImageSharp
 
         public static byte* stbi__resample_row_hv_2(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
         {
-            var i = 0;
-            var t0 = 0;
-            var t1 = 0;
+            int i = 0;
+            int t0 = 0;
+            int t1 = 0;
             if (w == 1)
             {
                 _out_[0] = _out_[1] = (byte)((3 * in_near[0] + in_far[0] + 2) >> 2);
@@ -1359,8 +1359,8 @@ namespace StbImageSharp
 
         public static byte* stbi__resample_row_generic(byte* _out_, byte* in_near, byte* in_far, int w, int hs)
         {
-            var i = 0;
-            var j = 0;
+            int i = 0;
+            int j = 0;
             for (i = 0; i < w; ++i)
                 for (j = 0; j < hs; ++j)
                     _out_[i * hs + j] = in_near[i];
@@ -1370,15 +1370,15 @@ namespace StbImageSharp
 
         public static void stbi__YCbCr_to_RGB_row(byte* _out_, byte* y, byte* pcb, byte* pcr, int count, int step)
         {
-            var i = 0;
+            int i = 0;
             for (i = 0; i < count; ++i)
             {
-                var y_fixed = (y[i] << 20) + (1 << 19);
-                var r = 0;
-                var g = 0;
-                var b = 0;
-                var cr = pcr[i] - 128;
-                var cb = pcb[i] - 128;
+                int y_fixed = (y[i] << 20) + (1 << 19);
+                int r = 0;
+                int g = 0;
+                int b = 0;
+                int cr = pcr[i] - 128;
+                int cb = pcb[i] - 128;
                 r = y_fixed + cr * ((int)(1.40200f * 4096.0f + 0.5f) << 8);
                 g = (int)(y_fixed + cr * -((int)(0.71414f * 4096.0f + 0.5f) << 8) +
                           ((cb * -((int)(0.34414f * 4096.0f + 0.5f) << 8)) & 0xffff0000));
@@ -1432,9 +1432,9 @@ namespace StbImageSharp
 
         public static byte* load_jpeg_image(stbi__jpeg z, int* out_x, int* out_y, int* comp, int req_comp)
         {
-            var n = 0;
-            var decode_n = 0;
-            var is_rgb = 0;
+            int n = 0;
+            int decode_n = 0;
+            int is_rgb = 0;
             z.s.img_n = 0;
             if (req_comp < 0 || req_comp > 4)
                 return (byte*)(ulong)(stbi__err("bad req_comp") != 0 ? 0 : 0);
@@ -1457,11 +1457,11 @@ namespace StbImageSharp
             }
 
             {
-                var k = 0;
+                int k = 0;
                 uint i = 0;
                 uint j = 0;
                 byte* output;
-                var coutput = stackalloc byte*[] { null, null, null, null };
+                byte** coutput = stackalloc byte*[] { null, null, null, null };
                 stbi__resample[] res_comp = new stbi__resample[4];
                 res_comp[0] = new stbi__resample();
                 res_comp[1] = new stbi__resample();
@@ -1504,11 +1504,11 @@ namespace StbImageSharp
 
                 for (j = 0; j < z.s.img_y; ++j)
                 {
-                    var _out_ = output + n * z.s.img_x * j;
+                    byte* _out_ = output + n * z.s.img_x * j;
                     for (k = 0; k < decode_n; ++k)
                     {
                         stbi__resample r = res_comp[k];
-                        var y_bot = r.ystep >= r.vs >> 1 ? 1 : 0;
+                        int y_bot = r.ystep >= r.vs >> 1 ? 1 : 0;
                         coutput[k] = r.resample(z.img_comp[k].linebuf, y_bot != 0 ? r.line1 : r.line0,
                             y_bot != 0 ? r.line0 : r.line1, r.w_lores, r.hs);
                         if (++r.ystep >= r.vs)
@@ -1522,7 +1522,7 @@ namespace StbImageSharp
 
                     if (n >= 3)
                     {
-                        var y = coutput[0];
+                        byte* y = coutput[0];
                         if (z.s.img_n == 3)
                         {
                             if (is_rgb != 0)
@@ -1543,7 +1543,7 @@ namespace StbImageSharp
                             {
                                 for (i = 0; i < z.s.img_x; ++i)
                                 {
-                                    var m = coutput[3][i];
+                                    byte m = coutput[3][i];
                                     _out_[0] = stbi__blinn_8x8(coutput[0][i], m);
                                     _out_[1] = stbi__blinn_8x8(coutput[1][i], m);
                                     _out_[2] = stbi__blinn_8x8(coutput[2][i], m);
@@ -1556,7 +1556,7 @@ namespace StbImageSharp
                                 z.YCbCr_to_RGB_kernel(_out_, y, coutput[1], coutput[2], (int)z.s.img_x, n);
                                 for (i = 0; i < z.s.img_x; ++i)
                                 {
-                                    var m = coutput[3][i];
+                                    byte m = coutput[3][i];
                                     _out_[0] = stbi__blinn_8x8((byte)(255 - _out_[0]), m);
                                     _out_[1] = stbi__blinn_8x8((byte)(255 - _out_[1]), m);
                                     _out_[2] = stbi__blinn_8x8((byte)(255 - _out_[2]), m);
@@ -1596,10 +1596,10 @@ namespace StbImageSharp
                         {
                             for (i = 0; i < z.s.img_x; ++i)
                             {
-                                var m = coutput[3][i];
-                                var r = stbi__blinn_8x8(coutput[0][i], m);
-                                var g = stbi__blinn_8x8(coutput[1][i], m);
-                                var b = stbi__blinn_8x8(coutput[2][i], m);
+                                byte m = coutput[3][i];
+                                byte r = stbi__blinn_8x8(coutput[0][i], m);
+                                byte g = stbi__blinn_8x8(coutput[1][i], m);
+                                byte b = stbi__blinn_8x8(coutput[2][i], m);
                                 _out_[0] = stbi__compute_y(r, g, b);
                                 _out_[1] = 255;
                                 _out_ += n;
@@ -1616,7 +1616,7 @@ namespace StbImageSharp
                         }
                         else
                         {
-                            var y = coutput[0];
+                            byte* y = coutput[0];
                             if (n == 1)
                                 for (i = 0; i < z.s.img_x; ++i)
                                     _out_[i] = y[i];

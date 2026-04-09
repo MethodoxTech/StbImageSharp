@@ -22,7 +22,7 @@ namespace StbImageSharp
 
         public static int stbi__png_test(stbi__context s)
         {
-            var r = 0;
+            int r = 0;
             r = stbi__check_png_header(s);
             stbi__rewind(s);
             return r;
@@ -68,7 +68,7 @@ namespace StbImageSharp
 
         public static int stbi__check_png_header(stbi__context s)
         {
-            var i = 0;
+            int i = 0;
             for (i = 0; i < 8; ++i)
                 if (stbi__get8(s) != stbi__check_png_header_png_sig[i])
                     return stbi__err("bad png sig");
@@ -78,17 +78,17 @@ namespace StbImageSharp
 
         public static int stbi__paeth(int a, int b, int c)
         {
-            var thresh = c * 3 - (a + b);
-            var lo = a < b ? a : b;
-            var hi = a < b ? b : a;
-            var t0 = hi <= thresh ? lo : c;
-            var t1 = thresh <= lo ? hi : t0;
+            int thresh = c * 3 - (a + b);
+            int lo = a < b ? a : b;
+            int hi = a < b ? b : a;
+            int t0 = hi <= thresh ? lo : c;
+            int t1 = thresh <= lo ? hi : t0;
             return t1;
         }
 
         public static void stbi__create_png_alpha_expand8(byte* dest, byte* src, uint x, int img_n)
         {
-            var i = 0;
+            int i = 0;
             if (img_n == 1)
                 for (i = (int)(x - 1); i >= 0; --i)
                 {
@@ -109,20 +109,20 @@ namespace StbImageSharp
         public static int stbi__create_png_image_raw(stbi__png a, byte* raw, uint raw_len, int out_n, uint x, uint y,
             int depth, int color)
         {
-            var bytes = depth == 16 ? 2 : 1;
+            int bytes = depth == 16 ? 2 : 1;
             stbi__context s = a.s;
             uint i = 0;
             uint j = 0;
-            var stride = (uint)(x * out_n * bytes);
+            uint stride = (uint)(x * out_n * bytes);
             uint img_len = 0;
             uint img_width_bytes = 0;
             byte* filter_buf;
-            var all_ok = 1;
-            var k = 0;
-            var img_n = s.img_n;
-            var output_bytes = out_n * bytes;
-            var filter_bytes = img_n * bytes;
-            var width = (int)x;
+            int all_ok = 1;
+            int k = 0;
+            int img_n = s.img_n;
+            int output_bytes = out_n * bytes;
+            int filter_bytes = img_n * bytes;
+            int width = (int)x;
             a._out_ = (byte*)stbi__malloc_mad3((int)x, (int)y, output_bytes, 0);
             if (a._out_ == null)
                 return stbi__err("outofmem");
@@ -145,10 +145,10 @@ namespace StbImageSharp
 
             for (j = 0; j < y; ++j)
             {
-                var cur = filter_buf + (j & 1) * img_width_bytes;
-                var prior = filter_buf + (~j & 1) * img_width_bytes;
-                var dest = a._out_ + stride * j;
-                var nk = width * filter_bytes;
+                byte* cur = filter_buf + (j & 1) * img_width_bytes;
+                byte* prior = filter_buf + (~j & 1) * img_width_bytes;
+                byte* dest = a._out_ + stride * j;
+                int nk = width * filter_bytes;
                 int filter = *raw++;
                 if (filter > 4)
                 {
@@ -202,11 +202,11 @@ namespace StbImageSharp
                 raw += nk;
                 if (depth < 8)
                 {
-                    var scale = (byte)(color == 0 ? stbi__depth_scale_table[depth] : 1);
-                    var _in_ = cur;
-                    var _out_ = dest;
+                    byte scale = (byte)(color == 0 ? stbi__depth_scale_table[depth] : 1);
+                    byte* _in_ = cur;
+                    byte* _out_ = dest;
                     byte inb = 0;
-                    var nsmp = (uint)(x * img_n);
+                    uint nsmp = (uint)(x * img_n);
                     if (depth == 4)
                         for (i = 0; i < nsmp; ++i)
                         {
@@ -244,8 +244,8 @@ namespace StbImageSharp
                 }
                 else if (depth == 16)
                 {
-                    var dest16 = (ushort*)dest;
-                    var nsmp = (uint)(x * img_n);
+                    ushort* dest16 = (ushort*)dest;
+                    uint nsmp = (uint)(x * img_n);
                     if (img_n == out_n)
                     {
                         for (i = 0; i < nsmp; ++i, ++dest16, cur += 2)
@@ -280,10 +280,10 @@ namespace StbImageSharp
         public static int stbi__create_png_image(stbi__png a, byte* image_data, uint image_data_len, int out_n,
             int depth, int color, int interlaced)
         {
-            var bytes = depth == 16 ? 2 : 1;
-            var out_bytes = out_n * bytes;
+            int bytes = depth == 16 ? 2 : 1;
+            int out_bytes = out_n * bytes;
             byte* final;
-            var p = 0;
+            int p = 0;
             if (interlaced == 0)
                 return stbi__create_png_image_raw(a, image_data, image_data_len, out_n, a.s.img_x, a.s.img_y, depth,
                     color);
@@ -292,19 +292,19 @@ namespace StbImageSharp
                 return stbi__err("outofmem");
             for (p = 0; p < 7; ++p)
             {
-                var xorig = stackalloc int[] { 0, 4, 0, 2, 0, 1, 0 };
-                var yorig = stackalloc int[] { 0, 0, 4, 0, 2, 0, 1 };
-                var xspc = stackalloc int[] { 8, 8, 4, 4, 2, 2, 1 };
-                var yspc = stackalloc int[] { 8, 8, 8, 4, 4, 2, 2 };
-                var i = 0;
-                var j = 0;
-                var x = 0;
-                var y = 0;
+                int* xorig = stackalloc int[] { 0, 4, 0, 2, 0, 1, 0 };
+                int* yorig = stackalloc int[] { 0, 0, 4, 0, 2, 0, 1 };
+                int* xspc = stackalloc int[] { 8, 8, 4, 4, 2, 2, 1 };
+                int* yspc = stackalloc int[] { 8, 8, 8, 4, 4, 2, 2 };
+                int i = 0;
+                int j = 0;
+                int x = 0;
+                int y = 0;
                 x = (int)((a.s.img_x - xorig[p] + xspc[p] - 1) / xspc[p]);
                 y = (int)((a.s.img_y - yorig[p] + yspc[p] - 1) / yspc[p]);
                 if (x != 0 && y != 0)
                 {
-                    var img_len = (uint)((((a.s.img_n * x * depth + 7) >> 3) + 1) * y);
+                    uint img_len = (uint)((((a.s.img_n * x * depth + 7) >> 3) + 1) * y);
                     if (stbi__create_png_image_raw(a, image_data, image_data_len, out_n, (uint)x, (uint)y, depth,
                             color) == 0)
                     {
@@ -315,8 +315,8 @@ namespace StbImageSharp
                     for (j = 0; j < y; ++j)
                         for (i = 0; i < x; ++i)
                         {
-                            var out_y = j * yspc[p] + yorig[p];
-                            var out_x = i * xspc[p] + xorig[p];
+                            int out_y = j * yspc[p] + yorig[p];
+                            int out_x = i * xspc[p] + xorig[p];
                             CRuntime.memcpy(final + out_y * a.s.img_x * out_bytes + out_x * out_bytes,
                                 a._out_ + (j * x + i) * out_bytes, (ulong)out_bytes);
                         }
@@ -335,8 +335,8 @@ namespace StbImageSharp
         {
             stbi__context s = z.s;
             uint i = 0;
-            var pixel_count = s.img_x * s.img_y;
-            var p = z._out_;
+            uint pixel_count = s.img_x * s.img_y;
+            byte* p = z._out_;
             if (out_n == 2)
                 for (i = 0; i < pixel_count; ++i)
                 {
@@ -358,8 +358,8 @@ namespace StbImageSharp
         {
             stbi__context s = z.s;
             uint i = 0;
-            var pixel_count = s.img_x * s.img_y;
-            var p = (ushort*)z._out_;
+            uint pixel_count = s.img_x * s.img_y;
+            ushort* p = (ushort*)z._out_;
             if (out_n == 2)
                 for (i = 0; i < pixel_count; ++i)
                 {
@@ -380,10 +380,10 @@ namespace StbImageSharp
         public static int stbi__expand_png_palette(stbi__png a, byte* palette, int len, int pal_img_n)
         {
             uint i = 0;
-            var pixel_count = a.s.img_x * a.s.img_y;
+            uint pixel_count = a.s.img_x * a.s.img_y;
             byte* p;
             byte* temp_out;
-            var orig = a._out_;
+            byte* orig = a._out_;
             p = (byte*)stbi__malloc_mad2((int)pixel_count, pal_img_n, 0);
             if (p == null)
                 return stbi__err("outofmem");
@@ -391,7 +391,7 @@ namespace StbImageSharp
             if (pal_img_n == 3)
                 for (i = 0; i < pixel_count; ++i)
                 {
-                    var n = orig[i] * 4;
+                    int n = orig[i] * 4;
                     p[0] = palette[n];
                     p[1] = palette[n + 1];
                     p[2] = palette[n + 2];
@@ -400,7 +400,7 @@ namespace StbImageSharp
             else
                 for (i = 0; i < pixel_count; ++i)
                 {
-                    var n = orig[i] * 4;
+                    int n = orig[i] * 4;
                     p[0] = palette[n];
                     p[1] = palette[n + 1];
                     p[2] = palette[n + 2];
@@ -417,13 +417,13 @@ namespace StbImageSharp
         {
             stbi__context s = z.s;
             uint i = 0;
-            var pixel_count = s.img_x * s.img_y;
-            var p = z._out_;
+            uint pixel_count = s.img_x * s.img_y;
+            byte* p = z._out_;
             if (s.img_out_n == 3)
             {
                 for (i = 0; i < pixel_count; ++i)
                 {
-                    var t = p[0];
+                    byte t = p[0];
                     p[0] = p[2];
                     p[2] = t;
                     p += 3;
@@ -436,11 +436,11 @@ namespace StbImageSharp
                         : stbi__unpremultiply_on_load_global) != 0)
                     for (i = 0; i < pixel_count; ++i)
                     {
-                        var a = p[3];
-                        var t = p[0];
+                        byte a = p[3];
+                        byte t = p[0];
                         if (a != 0)
                         {
-                            var half = (byte)(a / 2);
+                            byte half = (byte)(a / 2);
                             p[0] = (byte)((p[2] * 255 + half) / a);
                             p[1] = (byte)((p[1] * 255 + half) / a);
                             p[2] = (byte)((t * 255 + half) / a);
@@ -456,7 +456,7 @@ namespace StbImageSharp
                 else
                     for (i = 0; i < pixel_count; ++i)
                     {
-                        var t = p[0];
+                        byte t = p[0];
                         p[0] = p[2];
                         p[2] = t;
                         p += 4;
@@ -466,20 +466,20 @@ namespace StbImageSharp
 
         public static int stbi__parse_png_file(stbi__png z, int scan, int req_comp)
         {
-            var palette = stackalloc byte[1024];
+            byte* palette = stackalloc byte[1024];
             byte pal_img_n = 0;
             byte has_trans = 0;
-            var tc = stackalloc byte[] { 0, 0, 0 };
-            var tc16 = stackalloc ushort[3];
+            byte* tc = stackalloc byte[] { 0, 0, 0 };
+            ushort* tc16 = stackalloc ushort[3];
             uint ioff = 0;
             uint idata_limit = 0;
             uint i = 0;
             uint pal_len = 0;
-            var first = 1;
-            var k = 0;
-            var interlace = 0;
-            var color = 0;
-            var is_iphone = 0;
+            int first = 1;
+            int k = 0;
+            int interlace = 0;
+            int color = 0;
+            int is_iphone = 0;
             stbi__context s = z.s;
             z.expanded = null;
             z.idata = null;
@@ -499,8 +499,8 @@ namespace StbImageSharp
                         break;
                     case ((uint)73 << 24) + ((uint)72 << 16) + ((uint)68 << 8) + 82:
                         {
-                            var comp = 0;
-                            var filter = 0;
+                            int comp = 0;
+                            int filter = 0;
                             if (first == 0)
                                 return stbi__err("multiple IHDR");
                             first = 0;
@@ -636,7 +636,7 @@ namespace StbImageSharp
                                 return 0;
                             if (ioff + c.length > idata_limit)
                             {
-                                var idata_limit_old = idata_limit;
+                                uint idata_limit_old = idata_limit;
                                 byte* p;
                                 if (idata_limit == 0)
                                     idata_limit = c.length > 4096 ? c.length : 4096;

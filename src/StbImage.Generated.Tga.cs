@@ -8,9 +8,9 @@ namespace StbImageSharp
     {
         public static int stbi__tga_test(stbi__context s)
         {
-            var res = 0;
-            var sz = 0;
-            var tga_color_type = 0;
+            int res = 0;
+            int sz = 0;
+            int tga_color_type = 0;
             stbi__get8(s);
             tga_color_type = stbi__get8(s);
             if (tga_color_type > 1)
@@ -54,30 +54,30 @@ namespace StbImageSharp
             int tga_offset = stbi__get8(s);
             int tga_indexed = stbi__get8(s);
             int tga_image_type = stbi__get8(s);
-            var tga_is_RLE = 0;
-            var tga_palette_start = stbi__get16le(s);
-            var tga_palette_len = stbi__get16le(s);
+            int tga_is_RLE = 0;
+            int tga_palette_start = stbi__get16le(s);
+            int tga_palette_len = stbi__get16le(s);
             int tga_palette_bits = stbi__get8(s);
-            var tga_x_origin = stbi__get16le(s);
-            var tga_y_origin = stbi__get16le(s);
-            var tga_width = stbi__get16le(s);
-            var tga_height = stbi__get16le(s);
+            int tga_x_origin = stbi__get16le(s);
+            int tga_y_origin = stbi__get16le(s);
+            int tga_width = stbi__get16le(s);
+            int tga_height = stbi__get16le(s);
             int tga_bits_per_pixel = stbi__get8(s);
-            var tga_comp = 0;
-            var tga_rgb16 = 0;
+            int tga_comp = 0;
+            int tga_rgb16 = 0;
             int tga_inverted = stbi__get8(s);
             byte* tga_data;
             byte* tga_palette = null;
-            var i = 0;
-            var j = 0;
-            var raw_data = stackalloc byte[4];
+            int i = 0;
+            int j = 0;
+            byte* raw_data = stackalloc byte[4];
             raw_data[0] = 0;
             raw_data[1] = 0;
             raw_data[2] = 0;
             raw_data[3] = 0;
-            var RLE_count = 0;
-            var RLE_repeating = 0;
-            var read_next_pixel = 1;
+            int RLE_count = 0;
+            int RLE_repeating = 0;
+            int read_next_pixel = 1;
             if (tga_height > 1 << 24)
                 return (byte*)(ulong)(stbi__err("too large") != 0 ? 0 : 0);
             if (tga_width > 1 << 24)
@@ -109,8 +109,8 @@ namespace StbImageSharp
             {
                 for (i = 0; i < tga_height; ++i)
                 {
-                    var row = tga_inverted != 0 ? tga_height - i - 1 : i;
-                    var tga_row = tga_data + row * tga_width * tga_comp;
+                    int row = tga_inverted != 0 ? tga_height - i - 1 : i;
+                    byte* tga_row = tga_data + row * tga_width * tga_comp;
                     stbi__getn(s, tga_row, tga_width * tga_comp);
                 }
             }
@@ -134,7 +134,7 @@ namespace StbImageSharp
 
                     if (tga_rgb16 != 0)
                     {
-                        var pal_entry = tga_palette;
+                        byte* pal_entry = tga_palette;
                         for (i = 0; i < tga_palette_len; ++i)
                         {
                             stbi__tga_read_rgb16(s, pal_entry);
@@ -174,7 +174,7 @@ namespace StbImageSharp
                     {
                         if (tga_indexed != 0)
                         {
-                            var pal_idx = tga_bits_per_pixel == 8 ? stbi__get8(s) : stbi__get16le(s);
+                            int pal_idx = tga_bits_per_pixel == 8 ? stbi__get8(s) : stbi__get16le(s);
                             if (pal_idx >= tga_palette_len)
                                 pal_idx = 0;
                             pal_idx *= tga_comp;
@@ -202,11 +202,11 @@ namespace StbImageSharp
                 if (tga_inverted != 0)
                     for (j = 0; j * 2 < tga_height; ++j)
                     {
-                        var index1 = j * tga_width * tga_comp;
-                        var index2 = (tga_height - 1 - j) * tga_width * tga_comp;
+                        int index1 = j * tga_width * tga_comp;
+                        int index2 = (tga_height - 1 - j) * tga_width * tga_comp;
                         for (i = tga_width * tga_comp; i > 0; --i)
                         {
-                            var temp = tga_data[index1];
+                            byte temp = tga_data[index1];
                             tga_data[index1] = tga_data[index2];
                             tga_data[index2] = temp;
                             ++index1;
@@ -220,10 +220,10 @@ namespace StbImageSharp
 
             if (tga_comp >= 3 && tga_rgb16 == 0)
             {
-                var tga_pixel = tga_data;
+                byte* tga_pixel = tga_data;
                 for (i = 0; i < tga_width * tga_height; ++i)
                 {
-                    var temp = tga_pixel[0];
+                    byte temp = tga_pixel[0];
                     tga_pixel[0] = tga_pixel[2];
                     tga_pixel[2] = temp;
                     tga_pixel += tga_comp;
@@ -238,14 +238,14 @@ namespace StbImageSharp
 
         public static int stbi__tga_info(stbi__context s, int* x, int* y, int* comp)
         {
-            var tga_w = 0;
-            var tga_h = 0;
-            var tga_comp = 0;
-            var tga_image_type = 0;
-            var tga_bits_per_pixel = 0;
-            var tga_colormap_bpp = 0;
-            var sz = 0;
-            var tga_colormap_type = 0;
+            int tga_w = 0;
+            int tga_h = 0;
+            int tga_comp = 0;
+            int tga_image_type = 0;
+            int tga_bits_per_pixel = 0;
+            int tga_colormap_bpp = 0;
+            int sz = 0;
+            int tga_colormap_type = 0;
             stbi__get8(s);
             tga_colormap_type = stbi__get8(s);
             if (tga_colormap_type > 1)
@@ -358,11 +358,11 @@ namespace StbImageSharp
 
         public static void stbi__tga_read_rgb16(stbi__context s, byte* _out_)
         {
-            var px = (ushort)stbi__get16le(s);
+            ushort px = (ushort)stbi__get16le(s);
             ushort fiveBitMask = 31;
-            var r = (px >> 10) & fiveBitMask;
-            var g = (px >> 5) & fiveBitMask;
-            var b = px & fiveBitMask;
+            int r = (px >> 10) & fiveBitMask;
+            int g = (px >> 5) & fiveBitMask;
+            int b = px & fiveBitMask;
             _out_[0] = (byte)(r * 255 / 31);
             _out_[1] = (byte)(g * 255 / 31);
             _out_[2] = (byte)(b * 255 / 31);

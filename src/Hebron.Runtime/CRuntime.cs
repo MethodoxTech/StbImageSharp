@@ -61,9 +61,9 @@ namespace Hebron.Runtime
 
         public static int memcmp(void* a, void* b, long size)
         {
-            var result = 0;
-            var ap = (byte*)a;
-            var bp = (byte*)b;
+            int result = 0;
+            byte* ap = (byte*)a;
+            byte* bp = (byte*)b;
             for (long i = 0; i < size; ++i)
             {
                 if (*ap != *bp)
@@ -78,8 +78,8 @@ namespace Hebron.Runtime
 
         public static void memset(void* ptr, int value, long size)
         {
-            var bptr = (byte*)ptr;
-            var bval = (byte)value;
+            byte* bptr = (byte*)ptr;
+            byte bval = (byte)value;
             for (long i = 0; i < size; ++i)
                 *bptr++ = bval;
         }
@@ -127,9 +127,9 @@ namespace Hebron.Runtime
 
         public static int strcmp(sbyte* src, string token)
         {
-            var result = 0;
+            int result = 0;
 
-            for (var i = 0; i < token.Length; ++i)
+            for (int i = 0; i < token.Length; ++i)
             {
                 if (src[i] != token[i])
                 {
@@ -142,9 +142,9 @@ namespace Hebron.Runtime
 
         public static int strncmp(sbyte* src, string token, ulong size)
         {
-            var result = 0;
+            int result = 0;
 
-            for (var i = 0; i < Math.Min(token.Length, (int)size); ++i)
+            for (int i = 0; i < Math.Min(token.Length, (int)size); ++i)
             {
                 if (src[i] != token[i])
                 {
@@ -158,7 +158,7 @@ namespace Hebron.Runtime
         public static long strtol(sbyte* start, sbyte** end, int radix)
         {
             // First step - determine length
-            var length = 0;
+            int length = 0;
             sbyte* ptr = start;
             while (numbers.IndexOf((char)*ptr) != -1)
             {

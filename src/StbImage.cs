@@ -58,7 +58,7 @@ namespace StbImageSharp
 
         public static byte stbi__get8(stbi__context s)
         {
-            var b = s.Stream.ReadByte();
+            int b = s.Stream.ReadByte();
             if (b == -1) return 0;
 
             return (byte)b;
@@ -85,7 +85,7 @@ namespace StbImageSharp
                 s._tempBuffer.Length < size)
                 s._tempBuffer = new byte[size * 2];
 
-            var result = s.Stream.Read(s._tempBuffer, 0, size);
+            int result = s.Stream.Read(s._tempBuffer, 0, size);
             Marshal.Copy(s._tempBuffer, 0, new IntPtr(buf), result);
 
             return result;

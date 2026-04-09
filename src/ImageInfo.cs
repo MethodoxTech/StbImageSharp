@@ -20,10 +20,10 @@ namespace StbImageSharp
             int width, height, comp;
             StbImage.stbi__context context = new StbImage.stbi__context(stream);
 
-            var is16Bit = StbImage.stbi__is_16_main(context) == 1;
+            bool is16Bit = StbImage.stbi__is_16_main(context) == 1;
             StbImage.stbi__rewind(context);
 
-            var infoResult = StbImage.stbi__info_main(context, &width, &height, &comp);
+            int infoResult = StbImage.stbi__info_main(context, &width, &height, &comp);
             StbImage.stbi__rewind(context);
 
             if (infoResult == 0) return null;

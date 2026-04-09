@@ -3,62 +3,62 @@ using System.Reflection;
 
 namespace StbImageSharp.Tests.Utility
 {
-	/// <summary>
-	/// Resource utility
-	/// </summary>
-	public static class Res
-	{
-		/// <summary>
-		/// Open assembly resource stream by relative name
-		/// </summary>
-		/// <param name="assembly"></param>
-		/// <param name="assetName"></param>
-		/// <returns></returns>
-		public static Stream OpenResourceStream(this Assembly assembly, string assetName)
-		{
-			var path = assembly.GetName().Name + ".Resources." + assetName;
+    /// <summary>
+    /// Resource utility
+    /// </summary>
+    public static class Res
+    {
+        /// <summary>
+        /// Open assembly resource stream by relative name
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <param name="assetName"></param>
+        /// <returns></returns>
+        public static Stream OpenResourceStream(this Assembly assembly, string assetName)
+        {
+            string path = assembly.GetName().Name + ".Resources." + assetName;
 
             // Once you figure out the name, pass it in as the argument here.
             Stream stream = assembly.GetManifestResourceStream(path);
 
-			return stream;
-		}
+            return stream;
+        }
 
-		/// <summary>
-		/// Reads assembly resource as byte array by relative name
-		/// </summary>
-		/// <param name="assembly"></param>
-		/// <param name="assetName"></param>
-		/// <returns></returns>
-		public static byte[] ReadResourceAsBytes(this Assembly assembly, string assetName)
-		{
-            MemoryStream ms = new MemoryStream();
-			using (Stream input = assembly.OpenResourceStream(assetName))
-			{
-				input.CopyTo(ms);
+        /// <summary>
+        /// Reads assembly resource as byte array by relative name
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <param name="assetName"></param>
+        /// <returns></returns>
+        public static byte[] ReadResourceAsBytes(this Assembly assembly, string assetName)
+        {
+            MemoryStream ms = new();
+            using (Stream input = assembly.OpenResourceStream(assetName))
+            {
+                input.CopyTo(ms);
 
-				return ms.ToArray();
-			}
-		}
+                return ms.ToArray();
+            }
+        }
 
-		/// <summary>
-		/// Reads assembly resource as string by relative name
-		/// </summary>
-		/// <param name="assembly"></param>
-		/// <param name="assetName"></param>
-		/// <returns></returns>
-		public static string ReadResourceAsString(this Assembly assembly, string assetName)
-		{
-			string result;
-			using (Stream input = assembly.OpenResourceStream(assetName))
-			{
-				using (StreamReader textReader = new StreamReader(input))
-				{
-					result = textReader.ReadToEnd();
-				}
-			}
+        /// <summary>
+        /// Reads assembly resource as string by relative name
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <param name="assetName"></param>
+        /// <returns></returns>
+        public static string ReadResourceAsString(this Assembly assembly, string assetName)
+        {
+            string result;
+            using (Stream input = assembly.OpenResourceStream(assetName))
+            {
+                using (StreamReader textReader = new(input))
+                {
+                    result = textReader.ReadToEnd();
+                }
+            }
 
-			return result;
-		}
-	}
+            return result;
+        }
+    }
 }
