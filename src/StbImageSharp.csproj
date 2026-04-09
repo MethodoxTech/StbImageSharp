@@ -9,6 +9,7 @@
         <PackageProjectUrl>https://github.com/StbSharp/StbImageSharp</PackageProjectUrl>
         <Version>2.30.15</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <IsAotCompatible>true</IsAotCompatible>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
