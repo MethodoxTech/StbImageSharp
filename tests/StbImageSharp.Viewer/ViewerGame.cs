@@ -56,15 +56,15 @@ namespace StbImageSharp.Samples.MonoGame
 			_spriteBatch = new SpriteBatch(GraphicsDevice);
 
 			// Load image data into memory
-			using (var stream = File.OpenRead(_filePath))
+			using (FileStream stream = File.OpenRead(_filePath))
 			{
 				if (!_isAnimatedGif)
 				{
-					var image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
-					var texture = new Texture2D(GraphicsDevice, image.Width, image.Height, false, SurfaceFormat.Color);
+                    ImageResult image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
+                    Texture2D texture = new Texture2D(GraphicsDevice, image.Width, image.Height, false, SurfaceFormat.Color);
 					texture.SetData(image.Data);
 
-					var frame = new FrameInfo
+                    FrameInfo frame = new FrameInfo
 					{
 						Texture = texture,
 						DelayInMs = 0
@@ -75,12 +75,12 @@ namespace StbImageSharp.Samples.MonoGame
 				else
 				{
 					_totalDelayInMs = 0;
-					foreach(var image in ImageResult.AnimatedGifFramesFromStream(stream))
+					foreach(AnimatedFrameResult image in ImageResult.AnimatedGifFramesFromStream(stream))
 					{
-						var texture = new Texture2D(GraphicsDevice, image.Width, image.Height, false, SurfaceFormat.Color);
+                        Texture2D texture = new Texture2D(GraphicsDevice, image.Width, image.Height, false, SurfaceFormat.Color);
 						texture.SetData(image.Data);
 
-						var frame = new FrameInfo
+                        FrameInfo frame = new FrameInfo
 						{
 							Texture = texture,
 							DelayInMs = image.DelayInMs

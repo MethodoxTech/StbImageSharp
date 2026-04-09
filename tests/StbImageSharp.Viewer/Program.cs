@@ -27,7 +27,7 @@ namespace StbImageSharp.Samples.MonoGame
 					isAnimatedGif = true;
 				}
 
-				using (var game = new ViewerGame(args[0], isAnimatedGif))
+				using (ViewerGame game = new ViewerGame(args[0], isAnimatedGif))
 					game.Run();
 			}
 			catch(Exception ex)

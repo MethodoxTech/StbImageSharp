@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -48,8 +49,8 @@ namespace StbImageSharp.Testing
 
 			public string BuildString()
 			{
-				var sb = new StringBuilder();
-				foreach (var pair in _byExtension)
+                StringBuilder sb = new StringBuilder();
+				foreach (KeyValuePair<string, int> pair in _byExtension)
 				{
 					sb.AppendFormat("{0}: {1} ms, ", pair.Key, pair.Value);
 				}
@@ -61,8 +62,8 @@ namespace StbImageSharp.Testing
 
 			public string BuildStringCount()
 			{
-				var sb = new StringBuilder();
-				foreach (var pair in _byExtensionCount)
+                StringBuilder sb = new StringBuilder();
+				foreach (KeyValuePair<string, int> pair in _byExtensionCount)
 				{
 					sb.AppendFormat("{0}: {1}, ", pair.Key, pair.Value);
 				}
@@ -103,11 +104,11 @@ namespace StbImageSharp.Testing
 
 		private static LoadResult ParseTest(string name, LoadDelegate load)
 		{
-			var sw = new Stopwatch();
+            Stopwatch sw = new Stopwatch();
 
 			Log("With " + name);
 			int x = 0, y = 0;
-			var comp = ColorComponents.Grey;
+            ColorComponents comp = ColorComponents.Grey;
 			var parsed = new byte[0];
 			BeginWatch(sw);
 
@@ -175,11 +176,11 @@ namespace StbImageSharp.Testing
 
 				Log("----------------------------");
 
-				var stbImageSharpResult = ParseTest(
+                LoadResult stbImageSharpResult = ParseTest(
 					"StbImageSharp",
 					(out int x, out int y, out ColorComponents ccomp) =>
 					{
-						var img = ImageResult.FromMemory(data, ColorComponents.RedGreenBlueAlpha);
+                        ImageResult img = ImageResult.FromMemory(data, ColorComponents.RedGreenBlueAlpha);
 
 						x = img.Width;
 						y = img.Height;
@@ -188,7 +189,7 @@ namespace StbImageSharp.Testing
 						return img.Data;
 					});
 
-				var stbNativeResult = ParseTest(
+                LoadResult stbNativeResult = ParseTest(
 					"Stb.Native",
 					(out int x, out int y, out ColorComponents ccomp) =>
 					{
@@ -224,17 +225,17 @@ namespace StbImageSharp.Testing
 
 				if (extension != "psd" && extension != "pic" && extension != "hdr")
 				{
-					var imageSharpResult = ParseTest(
+                    LoadResult imageSharpResult = ParseTest(
 						"ImageSharp",
 						(out int x, out int y, out ColorComponents ccomp) =>
 						{
-							using (var image = Image.Load<Rgba32>(data))
+							using (Image<Rgba32> image = Image.Load<Rgba32>(data))
 							{
 								x = image.Width;
 								y = image.Height;
 								ccomp = ColorComponents.Default;
 
-								var memoryGroup = image.GetPixelMemoryGroup().ToArray()[0];
+                                Memory<Rgba32> memoryGroup = image.GetPixelMemoryGroup().ToArray()[0];
 								var pixelData = MemoryMarshal.AsBytes(memoryGroup.Span).ToArray();
 
 								return pixelData;
@@ -284,10 +285,10 @@ namespace StbImageSharp.Testing
 					return 1;
 				}
 
-				var start = DateTime.Now;
+                DateTime start = DateTime.Now;
 
 				var res = RunTests(args[0]);
-				var passed = DateTime.Now - start;
+                TimeSpan passed = DateTime.Now - start;
 				Log("Span: {0} ms", passed.TotalMilliseconds);
 				Log(DateTime.Now.ToLongTimeString() + " -- " + (res ? "Success" : "Failure"));
 

@@ -18,8 +18,8 @@ namespace StbImageSharp.Tests.Utility
 		{
 			var path = assembly.GetName().Name + ".Resources." + assetName;
 
-			// Once you figure out the name, pass it in as the argument here.
-			var stream = assembly.GetManifestResourceStream(path);
+            // Once you figure out the name, pass it in as the argument here.
+            Stream stream = assembly.GetManifestResourceStream(path);
 
 			return stream;
 		}
@@ -32,8 +32,8 @@ namespace StbImageSharp.Tests.Utility
 		/// <returns></returns>
 		public static byte[] ReadResourceAsBytes(this Assembly assembly, string assetName)
 		{
-			var ms = new MemoryStream();
-			using (var input = assembly.OpenResourceStream(assetName))
+            MemoryStream ms = new MemoryStream();
+			using (Stream input = assembly.OpenResourceStream(assetName))
 			{
 				input.CopyTo(ms);
 
@@ -50,9 +50,9 @@ namespace StbImageSharp.Tests.Utility
 		public static string ReadResourceAsString(this Assembly assembly, string assetName)
 		{
 			string result;
-			using (var input = assembly.OpenResourceStream(assetName))
+			using (Stream input = assembly.OpenResourceStream(assetName))
 			{
-				using (var textReader = new StreamReader(input))
+				using (StreamReader textReader = new StreamReader(input))
 				{
 					result = textReader.ReadToEnd();
 				}
