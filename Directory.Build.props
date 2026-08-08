@@ -4,7 +4,6 @@
     <Product>StbImageSharp</Product>
     <PackageLicenseExpression>Unlicense OR MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/StbSharp/StbImageSharp</PackageProjectUrl>
-    <RootNamespace>StbImageSharp</RootNamespace>
     <Version>2.30.16</Version>
   </PropertyGroup>
 </Project>
