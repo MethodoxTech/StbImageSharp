@@ -9,7 +9,11 @@
         <PackageProjectUrl>https://github.com/StbSharp/StbImageSharp</PackageProjectUrl>
         <Version>2.30.16</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <IsAotCompatible Condition="'$(TargetFramework)'=='net8.0'">true</IsAotCompatible>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+      <IsAotCompatible>true</IsAotCompatible>
+      <VerifyReferenceAotCompatibility>true</VerifyReferenceAotCompatibility>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
