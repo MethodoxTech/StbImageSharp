@@ -121,7 +121,7 @@ And performance comparison results are(times are total loading times):
 ```
 
 # License
-Public Domain
+Public Domain or MIT
 
 ## Support
 [Discord](https://discord.gg/ZeHxhCY)
