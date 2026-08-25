@@ -66,7 +66,15 @@ namespace StbImageSharp
 
         public static void stbi__skip(stbi__context s, int skip)
         {
-            s.Stream.Seek(skip, SeekOrigin.Current);
+            // Clamped to the end of the stream. A truncated or malformed file routinely declares a
+            // segment longer than what is actually there - a JPEG APP0 header claiming 16 bytes in
+            // an 11-byte file - and seeking blindly would move Position PAST Length, which is a
+            // position no subsequent read can recover from.
+            long target = s.Stream.Position + skip;
+            if (target < 0) target = 0;
+            if (target > s.Stream.Length) target = s.Stream.Length;
+
+            s.Stream.Seek(target, SeekOrigin.Begin);
         }
 
         public static void stbi__rewind(stbi__context s)
@@ -76,7 +84,11 @@ namespace StbImageSharp
 
         public static int stbi__at_eof(stbi__context s)
         {
-            return s.Stream.Position == s.Stream.Length ? 1 : 0;
+            // ">=", not "==". Testing for equality means a position past the end - which a seek
+            // could previously produce - reports "not at end of file" forever, and every decoder
+            // here scans for its next marker by reading bytes until EOF. A truncated JPEG did not
+            // fail to decode, it span in that loop indefinitely.
+            return s.Stream.Position >= s.Stream.Length ? 1 : 0;
         }
 
         public static int stbi__getn(stbi__context s, byte* buf, int size)
